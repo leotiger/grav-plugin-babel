@@ -1,0 +1,25 @@
+{% extends 'partials/base.html.twig' %}
+{% if admin.route %}
+    {% set context = admin.page(true) %}
+{% endif %}
+
+{% block titlebar %}
+    <h1><i class="fa fa-fw fa-file-text-o"></i> <a href="{{ config.plugins.admin.route ~ '/babel' }}">{{ "PLUGIN_BABEL.BABEL"|tu }}</a></h1>
+{% endblock %}
+
+{% block content %}
+    <style>
+        th { background: #d9d9d9; }
+
+        tr, td { text-align: left;}
+        .details { flex: 1.5 }
+
+        .center {
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+    <h1>{{ "PLUGIN_BABEL.BABEL"|tu }}</h1>
+    <div class="admin-block">
+    </div>
+{% endblock %}

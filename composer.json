@@ -1,0 +1,11 @@
+{
+    "require": {
+        "gettext/gettext": "^4.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Grav\\Plugin\\Babel\\": "classes/"
+        }
+    }
+    
+}

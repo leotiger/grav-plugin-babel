@@ -1,0 +1,24 @@
+{% extends 'babel_base.html.twig' %}
+
+{% block content %}
+    <style>
+        th { background: #d9d9d9; }
+
+        tr, td { text-align: left;}
+        .details { flex: 1.5 }
+
+        .center {
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+
+    <h1>{{ "PLUGIN_BABEL.DOMAINS"|tu }}</h1>
+
+    <div class="admin-block">
+        {% for lang, domain in translations if lang not in ['timestamp','checksum'] %}
+            {{ lang }}
+        {% endfor %}
+        
+    </div>
+{% endblock %}

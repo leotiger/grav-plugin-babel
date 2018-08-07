@@ -1,6 +1,6 @@
 {
     "require": {
-        "gettext/gettext": "^4.6"
+        "teamtnt/tntsearch": "^1.0"        
     },
     "autoload": {
         "psr-4": {

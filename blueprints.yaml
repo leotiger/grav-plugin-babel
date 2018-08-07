@@ -1,5 +1,5 @@
 name: Babel
-version: 0.1.0
+version: 1.0.0
 description: Translation services for GRAV
 icon: language
 author:
@@ -14,6 +14,7 @@ license: MIT
 
 dependencies:
     - { name: grav, version: '>=1.1.9' }
+    - { name: admin, version: '>=1.8.0' }
 
 form:
   validation: loose
@@ -29,3 +30,14 @@ form:
       validate:
         type: bool
 
+    translation_sets:
+        label: PLUGIN_BABEL.TRANSLATION_SETS
+        type: select
+        multiple: true
+        default:
+            - en
+        '@data-options': '\Grav\Plugin\Babel\Babel::getCodes'    
+        validate:
+            type: commalist
+            
+            

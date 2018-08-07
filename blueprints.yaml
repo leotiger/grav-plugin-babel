@@ -1,0 +1,43 @@
+name: Babel
+version: 1.0.0
+description: Translation services for GRAV
+icon: language
+author:
+  name: Uli Hake
+  email: uli.hake@gmaill.com
+  url: http://www.saveva.com
+keywords: plugin, i18n, translation, language administration, language synchronization
+homepage: https://github.com/leotiger/grav-plugin-babel
+bugs: https://github.com/leotiger/grav-plugin-babel/issues
+docs: https://github.com/leotiger/grav-plugin-babel/blob/master/README.md
+license: MIT
+
+dependencies:
+    - { name: grav, version: '>=1.1.9' }
+    - { name: admin, version: '>=1.8.0' }
+
+form:
+  validation: loose
+  fields:
+    enabled:
+      type: toggle
+      label: PLUGIN_ADMIN.PLUGIN_STATUS
+      highlight: 1
+      default: 1
+      options:
+        1: PLUGIN_ADMIN.ENABLED
+        0: PLUGIN_ADMIN.DISABLED
+      validate:
+        type: bool
+
+    translation_sets:
+        label: PLUGIN_BABEL.TRANSLATION_SETS
+        type: select
+        multiple: true
+        default:
+            - en
+        '@data-options': '\Grav\Plugin\Babel\Babel::getCodes'    
+        validate:
+            type: commalist
+            
+            

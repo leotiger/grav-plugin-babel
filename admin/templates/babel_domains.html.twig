@@ -1,0 +1,117 @@
+{% extends 'babel_base.html.twig' %}
+
+{% block content %}
+    <style>
+        th { background: #d9d9d9; }
+
+        tr, td { text-align: left;}
+        .details { flex: 1.5 }
+
+        .center {
+            margin: 0 auto;
+            text-align: center;
+        }
+    </style>
+    <div class="index-status">
+        {% if babel_index_status.status %}
+            <button id="babel-index" class="button reindex babel-reindex">{{ "PLUGIN_BABEL.REINDEX"|tu }}</button>
+            <span class="babel-status success"><i class="fa fa-language"></i> {{ babel_index_status.msg }}</span>
+        {% else %}
+            <button id="babel-index" class="button critical babel-reindex">{{ "PLUGIN_BABEL.INDEX"|tu }}</button>
+            <span class="babel-status error"><i class="fa fa-warning"></i> {{ babel_index_status.msg }}</span>
+        {% endif %}
+        {% if babelstats %}        
+            <button id="babel-reset" class="button reset babel-reset">{{ "PLUGIN_BABEL.RESET"|tu }}</button>            
+            <button id="babel-merge" class="button merge babel-merge">{{ "PLUGIN_BABEL.MERGE"|tu }}</button>            
+        {% endif %}
+        <div class="warning babel-error-details"></div>
+        {{ "DAYS_OF_THE_WEEK.TRANSLATION_TEST"|tu }}
+        {{ "SHOP.ITEM.BACK"|tu }}
+    </div>
+    
+    
+    <div class="admin-block">   
+        
+        
+        <!--<input type="text" placeholder="{{ "PLUGIN_BABEL.SEARCH"|t|e }}" />
+        <br />-->
+        {% if babelstats %}
+        <select id="babeldomains">            
+            <option value="*" {{ current_domain == '*' ? 'selected="selected"' : '' }}>{{ "PLUGIN_BABEL.ALL_DOMAINS"|tu }}</option>
+            <option value="*b" {{ current_domain == '*b' ? 'selected="selected"' : '' }}>{{ "PLUGIN_BABEL.BABEL_TOUCHED"|tu }}</option>
+        {% for domain in domains %}
+            <option value="{{  domain }}" {{ current_domain == domain ? 'selected="selected"' : '' }}>{{ domain }}</option>
+        {% endfor %}
+        </select>
+        
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>{{ "PLUGIN_BABEL.TRANSLATION_SET"|tu }}</th>
+                    <!--<th>{{ "PLUGIN_BABEL.DOMAIN"|tu }}</th>-->
+                    <th>{{ "PLUGIN_BABEL.DEFINED"|tu }}</th>
+                    <th>{{ "PLUGIN_BABEL.TRANSLATED"|tu }}</th>
+                    <th>{{ "PLUGIN_BABEL.UNTRANSLATED"|tu }}</th>
+                    <th>{{ "PLUGIN_BABEL.RATIO"|tu }}</th>
+                    <th>{{ "PLUGIN_BABEL.EXPORT"|tu }}</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for lang, stats in babelstats %}
+            <tr>
+                <td>{{ lang }}</td>
+                {#<td>{{ domain ? (domain == '*b' ? 'babelized' : domain) : '*' }}</td>#}
+                <!--<td>{{ current_domain }}</td>-->
+                {% if stats.all %}
+                <td><button class="button all" data-count="{{ stats.all }}" data-lang="{{ lang }}">{{ stats.all }}</button></td>
+                {% else %}
+                <td>{{ stats.all }}</td>
+                {% endif %}
+                {% if stats.translated %}
+                <td><button class="button translated" data-count="{{ stats.translated }}" data-lang="{{ lang }}">{{ stats.translated }}</button></td>
+                {% else %}
+                <td>{{ stats.translated }}</td>
+                {% endif %}
+                {% if stats.untranslated %}
+                <td><button class="button untranslated" data-count="{{ stats.untranslated }}" data-lang="{{ lang }}">{{ stats.untranslated }}</button></td>
+                {% else %}
+                <td>{{ stats.untranslated }}</td>
+                {% endif %}
+                {% if stats.all %}
+                <td>{{ ((stats.translated / stats.all * 100)|number_format('2')) }}%</td>
+                {% else %}
+                <td>0.00%</td>
+                {% endif %}
+                {% if current_domain in ['*', '*b'] or current_domain is empty %}
+                <td>                    
+                </td>
+                {% else %}
+                <td>
+                    <button class="button export" data-domain="{{ current_domain }}" data-lang="{{ lang }}">{{ "PLUGIN_BABEL.EXPORT"|t }}</button>
+                </td>
+                {% endif %}
+                
+            </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+        <div id="babels">
+        </div>
+        <br>
+        <table id='babels_table' class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+            <thead>
+                <tr>
+                    <th>{{ "PLUGIN_BABEL.DEFINITION"|tu }}</th>
+                    <th>{{ "PLUGIN_BABEL.TRANSLATION"|tu }}</th>
+                    <th>{{ "PLUGIN_BABEL.TRANSLATIONS"|tu }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                 
+            </tbody>
+        </table>
+        
+    </div>
+{% endblock %}

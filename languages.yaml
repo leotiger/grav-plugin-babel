@@ -1,0 +1,23 @@
+en:
+    PLUGIN_BABEL:
+        BABEL: Babel
+        DOMAINS: Domains
+        TRANSLATION_SETS: Translation sets
+        TRANSLATION_SET: Set
+        TRANSLATED: Translated
+        UNTRANSLATED: Untranslated
+        RATIO: Ratio
+        DEFINED: Defined
+        DOMAIN: Domain
+        SEARCH: Search translations
+        DEFINITION: Definition
+        TRANSLATION: Translation
+        TRANSLATIONS: Translations
+        REINDEX: Reindex Babel
+        INDEX: Index Babel
+        ALL_DOMAINS: All translation domains
+        BABEL_TOUCHED: Babelized definitions
+        RESET: Reset definitions
+        MERGE: Merge
+        EXPORT: Export
+ 

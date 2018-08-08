@@ -1,3 +1,11 @@
+# v1.1.0
+## 08-08-2018
+
+1. [](#new)
+    * Hide away complex system internals that include Regular Expressions to assure hassle-free usage of the plugin by less experienced site administrators
+1. [](#bugfix)
+    * Plugin domains, once translated with Babel, did not show status information correctly. Fixed.
+
 # v1.0.4
 ## 08-08-2018
 

@@ -21,4 +21,6 @@ en:
         MERGE: Merge
         EXPORT: Export
         DOMAIN_PACKAGE: Exported Language Pack
+        HIDE_SYSTEM: Hide system
+        HIDE_SYSTEM_HELP: Exclude GRAV System variables. You should not disable this option without a deep knowledge of the GRAV system internals and programming skills.
  

@@ -9,7 +9,8 @@ use Symfony\Component\Yaml\Yaml;
 use TeamTNT\TNTSearch\Exceptions\IndexNotFoundException;
 use Grav\Plugin\Babel\BabelSearch;
 use SQLite3;
-
+use Grav\Common\File\CompiledYamlFile;
+use Grav\Plugin\Babel\BabelConnector;
 
 class Babel
 {
@@ -17,6 +18,8 @@ class Babel
     protected $options;
     protected $bool_characters = ['-', '(', ')', 'or'];
     protected $index = 'babel.index';
+    protected $babelizations = [];
+    
     public static $codes = [
         'af'         => [ 'name' => 'Afrikaans',                 'nativeName' => 'Afrikaans' ],
         'ak'         => [ 'name' => 'Akan',                      'nativeName' => 'Akan' ], // unverified native name
@@ -198,6 +201,31 @@ class Babel
             "storage"   => $data_path,
             "driver"    => 'sqlite',
         ]);
+        
+        $locator = Grav::instance()['locator'];//$this->grav['locator'];
+        if (Grav::instance()['config']->get('system.languages.translations', true)) {
+            $babelConnector = new BabelConnector();
+            $languages_folder = $locator->findResource("user://data/babel/babelized");
+            if (file_exists($languages_folder)) {
+                $languages = [];
+                $iterator = new \DirectoryIterator($languages_folder);
+
+                /** @var \DirectoryIterator $directory */
+                foreach ($iterator as $file) {
+                    if ($file->getExtension() !== 'yaml') {
+                        continue;
+                    }
+                    $babels = CompiledYamlFile::instance($file->getPathname())->content();
+                    $babeldefinitions = [];
+                    $code = pathinfo($file->getFilename())['filename'];
+                    $babelConnector->runBabelDefs($babeldefinitions, $babels);
+                    $this->babelizations[$code] = $babeldefinitions;
+                    //Grav::instance()['log']->info(json_encode($this->babelizations[$code]));
+                }
+            }
+        }
+        
+        
     }
 
     public function search($query) {
@@ -384,7 +412,14 @@ class Babel
         $fields->status = $babel->status;
         $fields->translations = $babel->translations;
         $fields->rtl = $babel->rtl;
-        $fields->babelized = $babel->babelized;
+        // Track Babel edits here
+        if (count($this->babelizations) && isset($this->babelizations[$babel->language]) && isset($this->babelizations[$babel->language][$babel->route])) {
+            $fields->babelized = 1;
+        } else {
+            $fields->babelized = $babel->babelized;
+        }
+        
+        
         
         //$fileds->translations = $babel->translations;
         //Grav::instance()->fireEvent('onBabelIndex', new Event(['page' => $page, 'fields' => $fields]));

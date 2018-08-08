@@ -27,14 +27,7 @@ instance. This allows you to prepare additional languages before activating new 
 Once you have enabled the Babel languages you can index all language variables and existing translations. There is one magic keyboard shortcut
 availabel Command/Ctrl + s which allows you to save right from within of the textarea. 
 
-## Lifecycle
-
-It's important to understand the lifecycle of translations managed by Babel. Let's coin a term to explain what's meant with Babel Lifecycle:
-
-the Babel session which spans from working on a fresh index till merging the results back into the system. The Babel session is recycled once you 
-request and generate a new index. During a Babel session all changes to language variables are tracked and you can see what you've done using the
-*babelized* domain filter. Once you re-index the merged language variables the changed language variables form part of the definition corpus, the 
-dictionary of your instance.
+Babel identifies edited and merged definitions when a re-index takes place. This allows the plugin to only merge edited definitions.
 
 ## What's missing
 

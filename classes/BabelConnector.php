@@ -9,6 +9,8 @@ use Grav\Plugin\Babel\Babel;
 
 class BabelConnector extends \PDO
 {
+    protected $once = false;
+    
     public function __construct()
     {
 
@@ -36,7 +38,7 @@ class BabelConnector extends \PDO
         foreach($codes as $code => $langdef) {
             $babels = Grav::instance()['languages']->get($langdef);
             if (is_array($babels) && count($babels)) {
-                $this->runBabelDefs($babeldefinitions, $babels, $langdef, '');
+                $this->runBabelDefs($babeldefinitions, $babels);
             }
         }
         
@@ -63,7 +65,7 @@ class BabelConnector extends \PDO
         return new BabelResultObject($results);
     }
     
-    private function runBabelDefs(&$babeldefinitions, $babels, $code, $route, $level = 0, $levels = []) {
+    public function runBabelDefs(&$babeldefinitions, $babels, $level = 0, $levels = []) {
         
         foreach($babels as $key => $babel) {
             if (!is_array($babel)) {
@@ -73,7 +75,7 @@ class BabelConnector extends \PDO
                 }
             } elseif (is_array($babel)) {
                 $levels[$level] = $key;
-                $this->runBabelDefs($babeldefinitions, $babel, $code, $route, $level + 1, $levels);                
+                $this->runBabelDefs($babeldefinitions, $babel, $level + 1, $levels);                
             }
         }
     }
@@ -106,7 +108,8 @@ class BabelConnector extends \PDO
                 }
             }
             $babelobj->translations = json_encode($translations, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
-            $babelobj->rtl = Babel::isRtl($code) ? 'RTL' : 'LTR';   
+            $babelobj->rtl = Babel::isRtl($code) ? 'RTL' : 'LTR';
+            
             $babelobj->babelized = 0;
             return $babelobj;
     }

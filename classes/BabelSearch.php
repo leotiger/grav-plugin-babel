@@ -436,14 +436,14 @@ class BabelSearch extends TNTSearch
     public function getBabelStats($languages, $domain = "")
     {
         $stats = [];
-        $babelized = 0;
+        //$babelized = 0;
         if ($domain == '*b') {
             $domain = false;
             $babelized = 1;            
         }
         
         foreach($languages as $language) {            
-            $query = "SELECT COUNT(doc_id) FROM babellist WHERE babelized = $babelized and language = :language AND status = 0" . ($domain ? ' AND domain = :domain' : "");
+            $query = "SELECT COUNT(doc_id) FROM babellist WHERE " . (isset($babelized) ? 'babelized = 1 and ' : '') . "language = :language AND status = 0" . ($domain ? ' AND domain = :domain' : "");
             $stmtDoc = $this->index->prepare($query);
             $stmtDoc->bindValue(':language', $language);
             if ($domain) {
@@ -452,7 +452,7 @@ class BabelSearch extends TNTSearch
             $stmtDoc->execute();            
             $untranslated = $stmtDoc->fetchAll(PDO::FETCH_COLUMN);
             
-            $query = "SELECT COUNT(doc_id) FROM babellist WHERE babelized = $babelized and language = :language AND status = 1" . ($domain ? ' AND domain = :domain' : "");
+            $query = "SELECT COUNT(doc_id) FROM babellist WHERE " . (isset($babelized) ? 'babelized = 1 and ' : '') . "language = :language AND status = 1" . ($domain ? ' AND domain = :domain' : "");
             $stmtDoc = $this->index->prepare($query);
             $stmtDoc->bindValue(':language', $language);
             if ($domain) {
@@ -461,7 +461,7 @@ class BabelSearch extends TNTSearch
             $stmtDoc->execute();            
             $translated = $stmtDoc->fetchAll(PDO::FETCH_COLUMN);
             
-            $query = "SELECT COUNT(doc_id) FROM babellist WHERE babelized = $babelized and language = :language" . ($domain ? ' AND domain = :domain' : "");
+            $query = "SELECT COUNT(doc_id) FROM babellist WHERE " . (isset($babelized) ? 'babelized = 1 and ' : '') . "language = :language" . ($domain ? ' AND domain = :domain' : "");
             $stmtDoc = $this->index->prepare($query);
             $stmtDoc->bindValue(':language', $language);
             if ($domain) {

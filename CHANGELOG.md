@@ -1,3 +1,9 @@
+# v1.1.0
+## 08-08-2018
+
+1. [](#new)
+    * Hide away system internals to assure hassle-free usage of the plugin by less experienced site administrators
+
 # v1.0.4
 ## 08-08-2018
 

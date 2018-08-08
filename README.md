@@ -35,6 +35,14 @@ You can export language packs based on domains, e.g. export translations sets re
 definitions. Please take into account that you have to trigger the export for each language. Export functionality is only available when a language domain
 is active but not for all domains and not for the *babelized* filter.
 
+The plugin offers three special filters that represent virtual domains:
+
+* all domains
+* babelized (items edited with the Babel plugin)
+* unclassified
+
+The last filter loads a collection of variables ( that 
+
 ## What's missing
 
 * a common, shared language repository for GRAV

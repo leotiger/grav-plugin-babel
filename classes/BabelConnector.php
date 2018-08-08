@@ -65,19 +65,22 @@ class BabelConnector extends \PDO
         return new BabelResultObject($results);
     }
     
-    public function runBabelDefs(&$babeldefinitions, $babels, $level = 0, $levels = []) {
-        
+    public function runBabelDefs(&$babeldefinitions, $babels, $level = 0, $levels = []) {        
+        $excludes = ["INFLECTOR_PLURALS", "INFLECTOR_SINGULAR"];
         foreach($babels as $key => $babel) {
             if (!is_array($babel)) {
                 if ($level == 0) {
                     $id = 'unclassified.' . $key;
                 } else {
                     $id = implode('.', $levels) . '.' . $key;
-                }                
+                }                                      
                 if (!in_array($id, $babeldefinitions)) {
                     $babeldefinitions[$id] = $id;
                 }
             } elseif (is_array($babel)) {
+                if (in_array($key, $excludes)) {
+                    continue;
+                }            
                 $levels[$level] = $key;
                 $this->runBabelDefs($babeldefinitions, $babel, $level + 1, $levels);                
             }

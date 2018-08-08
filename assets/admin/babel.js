@@ -160,8 +160,6 @@
         $('.admin-block .export').on('click', function() {
             var $domain = $(this).data('domain');
             var $lang = $(this).data('lang');            
-            //document.location = GravAdmin.config.base_url_relative + '/babel';                
-            //table.destroy();            
             babelexport($domain, $lang);
         });
        
@@ -172,7 +170,7 @@
         var babelset = function(status, lang, domain, count) {
             $('#babels_table').dataTable( {
                 dom: "Bfrtip",
-                autoWidth: true,
+                autoWidth: false,
                 columns: [                    
                     { data: null, render: function ( data, type, row ) {
                         var $col = '<div class="babel_definition"><div class="babel_save' + (data.babelized == '1' ? ' button' : '') + '"><i class="fa fa-save"></i></div><input class="babel_doc_id" type="hidden" value="' + data.doc_id + '" />' +                        

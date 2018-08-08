@@ -585,8 +585,31 @@ class BabelSearch extends TNTSearch
             $yaml->file($yamlfile);
             $yaml->save();
         }
+        $this->zipExport($this->config['storage'], $pathToExport, $domain);
     }
      
+    private function zipExport($storage, $folder, $domain) {
+        $zipDir = $storage . 'zips';
+        if (!file_exists($zipDir)) {
+            mkdir($zipDir);
+        }
+        $zipFile = $zipDir . DS . $domain . '_languages.zip';
+        $zipArchive = new \ZipArchive();
+
+        if (!$zipArchive->open($zipFile, \ZipArchive::CREATE)) {
+            Grav::instance()['log']->info('Failed to create zip archive for domain ' . $domain . ' export.');
+            return;
+        }
+        $globOptions = array('remove_all_path' => TRUE);
+        $zipArchive->addGlob($storage . $domain . DS . '*' . YAML_EXT, GLOB_BRACE, $globOptions);
+        if (!$zipArchive->status == \ZipArchive::ER_OK) {
+            Grav::instance()['log']->info('addGlob failed...');
+            return;
+        }
+        $zipArchive->close();    
+    }
+    
+    
     public function mergeBabel() {  
         if (is_null($this->index)) {
             $pathToIndex = $this->config['storage'] . 'babel.index';

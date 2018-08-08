@@ -34,15 +34,13 @@
         <!--<input type="text" placeholder="{{ "PLUGIN_BABEL.SEARCH"|t|e }}" />
         <br />-->
         {% if babelstats %}
-        <select id="babeldomains">            
+            <select id="babeldomains" data-domainfiles="{{ domainfiles|json_encode() }}">            
             <option value="*" {{ current_domain == '*' ? 'selected="selected"' : '' }}>{{ "PLUGIN_BABEL.ALL_DOMAINS"|tu }}</option>
             <option value="*b" {{ current_domain == '*b' ? 'selected="selected"' : '' }}>{{ "PLUGIN_BABEL.BABEL_TOUCHED"|tu }}</option>
-        {% for domain in domains %}
-            <option value="{{  domain }}" {{ current_domain == domain ? 'selected="selected"' : '' }}>{{ domain }}</option>
-        {% endfor %}
+            {% for domain in domains %}
+                <option value="{{  domain }}" {{ current_domain == domain ? 'selected="selected"' : '' }}>{{ domain }}</option>
+            {% endfor %}        
         </select>
-        
-        
         <table>
             <thead>
                 <tr>
@@ -110,6 +108,25 @@
                  
             </tbody>
         </table>
-        
+
+        <table id='babel_domain_packages' class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
+            <thead>
+                <tr>
+                    <th>{{ "PLUGIN_BABEL.DOMAIN"|tu }}</th>
+                    <th>{{ "PLUGIN_BABEL.DOMAIN_PACKAGE"|tu }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for domain, domainfile in domainfiles %}
+                <tr>
+                    <td>{{ domain }}</td>
+                    <td><a href="{{ domainfile }}" class="babel-domainfiles">{{ domain ~ '_languages.zip' }}</a></td>
+                </tr>
+                {% endfor %}                                 
+            </tbody>
+        </table>
+                
+        <div 
+                
     </div>
 {% endblock %}

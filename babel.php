@@ -95,8 +95,12 @@ class BabelPlugin extends Plugin
             
             //$this->grav['babel']->createIndex();
         } else {
-        
             $twig->twig_vars['babel_index_status'] = ['status' => $status, 'msg' => $msg];
+            // Avoid unncessary processing...
+            $uri = $this->grav['uri'];
+            if (strpos($uri->path(), $this->config->get('plugins.admin.route') . '/' . $this->route) === false) {                
+                return;
+            }        
             $this->grav['assets']->addCss('plugin://babel/bower_components/bootstrap/dist/css/bootstrap.css');
             $this->grav['assets']->addCss('plugin://babel/assets/admin/babel.css');
             $this->grav['assets']->addCss('plugin://babel/bower_components/datatables.net-bs/css/dataTables.bootstrap.css');
@@ -107,81 +111,17 @@ class BabelPlugin extends Plugin
             $this->grav['assets']->addJs('plugin://babel/bower_components/datatables.net/js/jquery.dataTables.js');
             $this->grav['assets']->addJs('plugin://babel/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js');
             $this->grav['assets']->addJs('plugin://babel/bower_components/datatables.net-responsive/js/dataTables.responsive.min.js');
-            $uri = $this->grav['uri'];
-            if (strpos($uri->path(), $this->config->get('plugins.admin.route') . '/' . $this->route) === false) {
-                //return;
-            }
             $domain = $uri->param('domain');
             $twig->twig_vars['current_domain'] = $domain;
             $twig->twig_vars['babelstats'] = $this->babel->getBabelStats($domain);
-            
-            $twig->twig_vars['domains'] = $this->babel->getBabelDomains();
-            /*
-            $translations = Grav::instance()['languages'];
+            $domains = $this->babel->getBabelDomains();
+            $twig->twig_vars['domains'] = $domains;
+            $twig->twig_vars['domainfiles'] = $this->babel->getDomainFiles($domains);
 
-            $codes = Grav::instance()['config']->get('plugins.babel.translation_sets', ['en']);
-            $babeldefinitions = [];
-            foreach($codes as $code => $langdef) {
-                $babels = $translations->get($langdef);
-                if (is_array($babels) && count($babels)) {
-                    $this->runBabelDefs($babeldefinitions, $babels, $langdef, '');
-                }
-            }
-             * 
-             */
         }
     }   
-    /*
-    private function runBabelDefs(&$babeldefinitions, $babels, $code, $route, $level = 0) {
-        
-        foreach($babels as $key => $babel) {
-            if (!is_array($babel) && !in_array($key, $babeldefinitions)) {
-                $id = $route . '.' . $key;
-                $babeldefinitions[$id] = $id;
-                //Grav::instance()['log']->info($id);
-            } elseif (is_array($babel)) {
-                if ($level == 0) {
-                    $route = $key;                    
-                } else {
-                    $route = $route . '.' . $key;
-                }
-                $this->runBabelDefs($babeldefinitions, $babel, $code, $route, $level + 1);
-                
-            }
-        }
-    }
 
-    private function createBabelDef($definition, $code) {
-            $babelobj = new \stdClass();
-            $id = $code . '.' . $definition;
-            $babelobj->route = $id;
-            $babelobj->domain = explode('.', $definition)[0];
-            $babelobj->language = $code;
-            $translation = $this->grav['language']->translate($definition, [$code]);
-            
-            $babelobj->definition = $translation;// . ' ' . $id . ' ' . str_replace('.', ' ', $id);
-            return $babelobj;
-            //$babelobjects[] = $babelobj;
-    }
 
-    
-    private function runBabel(&$babelobjects, $babels, $code, $route) {
-        foreach($babels as $key => $babel) {
-            if (!is_array($babel) && count(explode('.', $route)) > 1) {
-                $babelobj = new \stdClass();
-                $id = $route . '.' . $key;
-                $babelobj->route = $id;
-                $babelobj->domain = explode('.', $route)[1];
-                $babelobj->language = explode('.', $route)[0];
-                $babelobj->definition = $babel . ' ' . $id . ' ' . str_replace('.', ' ', $id);
-                $babelobjects[] = $babelobj;
-            } elseif (is_array($babel)) {
-                $this->runBabel($babelobjects, $babel, $code, $route . '.' . $key);
-            }
-        }
-    }
-    */
-    
     /**
      * Wrapper to get the number of documents currently indexed
      *

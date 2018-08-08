@@ -11,6 +11,7 @@ use Grav\Plugin\Babel\BabelSearch;
 use SQLite3;
 use Grav\Common\File\CompiledYamlFile;
 use Grav\Plugin\Babel\BabelConnector;
+use \Grav\Common\Twig\TwigExtension;
 
 class Babel
 {
@@ -19,6 +20,7 @@ class Babel
     protected $bool_characters = ['-', '(', ')', 'or'];
     protected $index = 'babel.index';
     protected $babelizations = [];
+    protected $export_path = 'user://data/babel';
     
     public static $codes = [
         'af'         => [ 'name' => 'Afrikaans',                 'nativeName' => 'Afrikaans' ],
@@ -178,11 +180,11 @@ class Babel
         $snippet = Grav::instance()['config']->get('plugins.babel.snippet', 300);
         $data_path = Grav::instance()['locator']->findResource('user://data', true) . '/babel';
 
-
         if (!file_exists($data_path)) {
             mkdir($data_path);
         }
 
+        
         $dbloc = $data_path . DS . $this->index;
         
         $defaults = [
@@ -465,4 +467,18 @@ class Babel
     {
         return $this->babel->mergeBabel();
     }    
+    
+    public function getDomainFiles($domains) {
+        $domainfiles = [];        
+        $twig_extension = new TwigExtension();        
+        $zip_path = Grav::instance()['locator']->findResource($this->export_path, true) . '/zips';
+        foreach($domains as $domain) {
+            $zipFile = $zip_path . DS . $domain . '_languages.zip';
+            if (file_exists($zipFile)) {
+                $domainfiles[$domain] = $twig_extension->urlFunc($this->export_path . '/zips/' . $domain . '_languages.zip', true);
+            }
+        }
+        return $domainfiles;
+    }
+   
 }

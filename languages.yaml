@@ -20,4 +20,5 @@ en:
         RESET: Reset definitions
         MERGE: Merge
         EXPORT: Export
+        DOMAIN_PACKAGE: Exported Language Pack
  

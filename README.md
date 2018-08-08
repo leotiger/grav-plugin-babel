@@ -25,9 +25,13 @@ handle with Babel in the plugin configuration. The languages handled by Babel do
 instance. This allows you to prepare additional languages before activating new ones for your site.
 
 Once you have enabled the Babel languages you can index all language variables and existing translations. There is one magic keyboard shortcut
-availabel Command/Ctrl + s which allows you to save right from within of the textarea. 
+available Command/Ctrl + s which allows you to save right from within of the textarea field used to edit translations. 
 
 Babel identifies edited and merged definitions when a re-index takes place. This allows the plugin to only merge edited definitions.
+
+You can export language packs based on domains, e.g. export translations sets related with PLUGIN_ADMIN. The language pack includes all exported
+definition. Please take into account that you have to trigger the export for each language. Export functionality is only available when a language domain
+is active but not for all domains and not for the *babelized* filter.
 
 ## What's missing
 

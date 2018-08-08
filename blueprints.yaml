@@ -1,5 +1,5 @@
 name: Babel
-version: 1.0.2
+version: 1.0.3
 description: Translation services for GRAV
 icon: language
 author:
@@ -13,7 +13,7 @@ docs: https://github.com/leotiger/grav-plugin-babel/blob/master/README.md
 license: MIT
 
 dependencies:
-    - { name: grav, version: '>=1.1.9' }
+    - { name: grav, version: '>=1.4.0' }
     - { name: admin, version: '>=1.8.0' }
 
 form:

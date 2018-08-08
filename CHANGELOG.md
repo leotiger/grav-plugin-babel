@@ -1,3 +1,10 @@
+# v1.0.2
+## 08-08-2018
+
+1. [](#improved)
+    * Return to saving only edited (babelized) definitions
+    * Track edited definitions on re-index keeping track forever
+
 # v1.0.1
 ## 08-08-2018
 

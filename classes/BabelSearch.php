@@ -611,7 +611,7 @@ class BabelSearch extends TNTSearch
             }
             
             // We need to export all variables, otherwise changes done in previous Babel sessions get lost.
-            $query = "SELECT route, translated FROM babellist WHERE status = 1 and language = :language ORDER BY route";
+            $query = "SELECT route, translated FROM babellist WHERE babelized = 1 and status = 1 and language = :language ORDER BY route";
             $stmtDoc = $this->index->prepare($query);
 
             $stmtDoc->bindValue(':language', $langdef);

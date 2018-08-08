@@ -2,7 +2,7 @@
 ## 08-08-2018
 
 1. [](#new)
-    * Zip exported domain definitions into language pack zips
+    * Zip exported domain definitions into language packs
     * Make domain language packs available in the Babel interface
 
 # v1.0.2

@@ -577,7 +577,8 @@ class BabelSearch extends TNTSearch
             
             $translations = [];
             foreach($export as $definition) {                                
-                $translations = array_merge_recursive($translations, $this->toYamlArray(explode('.', $definition['route']), $definition['translated']));
+                $route = str_replace('unclassified.', '', $definition['route']);
+                $translations = array_merge_recursive($translations, $this->toYamlArray(explode('.', $route), $definition['translated']));
             }
             
             $yamlfile = CompiledYamlFile::instance($pathToExport . DS . $lang . '.yaml');            
@@ -643,8 +644,9 @@ class BabelSearch extends TNTSearch
             $export = $stmtDoc->fetchAll(PDO::FETCH_ASSOC);
 
             $translations = [];
-            foreach($export as $definition) {                                
-                $translations = array_merge_recursive($translations, $this->toYamlArray(explode('.', $definition['route']), $definition['translated']));
+            foreach($export as $definition) {     
+                $route = str_replace('unclassified.', '', $definition['route']);
+                $translations = array_merge_recursive($translations, $this->toYamlArray(explode('.', $route), $definition['translated']));
             }
             if (count($translations)) {
                 $yamlfile = CompiledYamlFile::instance($data_path . DS . $langdef . '.yaml');            

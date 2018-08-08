@@ -69,7 +69,11 @@ class BabelConnector extends \PDO
         
         foreach($babels as $key => $babel) {
             if (!is_array($babel)) {
-                $id = implode('.', $levels) . '.' . $key;
+                if ($level == 0) {
+                    $id = 'unclassified.' . $key;
+                } else {
+                    $id = implode('.', $levels) . '.' . $key;
+                }                
                 if (!in_array($id, $babeldefinitions)) {
                     $babeldefinitions[$id] = $id;
                 }
@@ -87,6 +91,7 @@ class BabelConnector extends \PDO
             $babelobj->route = $definition;
             $babelobj->domain = explode('.', $definition)[0];
             $babelobj->language = $code;
+            $definition = str_replace('unclassified.', '', $definition);
             $translation = Grav::instance()['language']->translate($definition, [$code]);
             
             if ($translation == $definition || !$translation) {
@@ -100,6 +105,7 @@ class BabelConnector extends \PDO
             $translations = [];
             foreach($codes as $langdef) {
                 if ($langdef != $code) {
+                    //$definition = str_replace('unclassified.', '', $definition);
                     $translation = Grav::instance()['language']->translate($definition, [$langdef]);
                     if ($translation != $definition && $translation) {
                         $rtl = Babel::isRtl($langdef) ? 'RTL' : 'LTR';

@@ -29,8 +29,10 @@ available Command/Ctrl + s which allows you to save right from within of the tex
 
 Babel identifies edited and merged definitions when a re-index takes place. This allows the plugin to only merge edited definitions.
 
+Important: Please merge your changes. Without merging changes are lost once you re-index.
+
 You can export language packs based on domains, e.g. export translations sets related with PLUGIN_ADMIN. The language pack includes all exported
-definition. Please take into account that you have to trigger the export for each language. Export functionality is only available when a language domain
+definitions. Please take into account that you have to trigger the export for each language. Export functionality is only available when a language domain
 is active but not for all domains and not for the *babelized* filter.
 
 ## What's missing

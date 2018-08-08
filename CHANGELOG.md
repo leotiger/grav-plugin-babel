@@ -1,3 +1,10 @@
+# v1.0.4
+## 08-08-2018
+
+1. [](#bugfix)
+    * Fixed indexing problem for variables with no parent group identifier aka domain. These are no routed into domain *unclassified*
+    * Indexing as unclassified should fix as well wrong attributions and counts for the rest of the domains
+
 # v1.0.3
 ## 08-08-2018
 

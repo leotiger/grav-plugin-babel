@@ -506,7 +506,7 @@ class BabelSearch extends TNTSearch
             $this->index->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         
-        $query = "SELECT * FROM babellist WHERE babelized = $babelized and language = :language" . ($status === 0 || $status === 1 ? ' AND status = :status' : '') . ($domain && $domain != 'babelized' ? ' AND domain = :domain' : "");
+        $query = "SELECT * FROM babellist WHERE " . ($babelized ? 'babelized = 1 and ' : '') . "language = :language" . ($status === 0 || $status === 1 ? ' AND status = :status' : '') . ($domain && $domain != 'babelized' ? ' AND domain = :domain' : "");
         $stmtDoc = $this->index->prepare($query);
         
         $stmtDoc->bindValue(':language', $lang);
@@ -609,8 +609,9 @@ class BabelSearch extends TNTSearch
             if (!file_exists($pathToExport)) {
                 mkdir($pathToExport);
             }
-
-            $query = "SELECT route, translated FROM babellist WHERE babelized = 1 and status = 1 and language = :language ORDER BY route";
+            
+            // We need to export all variables, otherwise changes done in previous Babel sessions get lost.
+            $query = "SELECT route, translated FROM babellist WHERE status = 1 and language = :language ORDER BY route";
             $stmtDoc = $this->index->prepare($query);
 
             $stmtDoc->bindValue(':language', $langdef);

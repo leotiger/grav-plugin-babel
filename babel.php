@@ -100,7 +100,8 @@ class BabelPlugin extends Plugin
             $uri = $this->grav['uri'];
             if (strpos($uri->path(), $this->config->get('plugins.admin.route') . '/' . $this->route) === false) {                
                 return;
-            }        
+            }       
+            
             $this->grav['assets']->addCss('plugin://babel/bower_components/bootstrap/dist/css/bootstrap.css');
             $this->grav['assets']->addCss('plugin://babel/assets/admin/babel.css');
             $this->grav['assets']->addCss('plugin://babel/bower_components/datatables.net-bs/css/dataTables.bootstrap.css');
@@ -114,7 +115,8 @@ class BabelPlugin extends Plugin
             $domain = $uri->param('domain');
             $twig->twig_vars['current_domain'] = $domain;
             $twig->twig_vars['babelstats'] = $this->babel->getBabelStats($domain);
-            $domains = $this->babel->getBabelDomains();
+            $domains = $this->babel->getBabelDomains();            
+            $domains['theme'] = 'THEME_TRACKED';
             $twig->twig_vars['domains'] = $domains;
             $twig->twig_vars['domainfiles'] = $this->babel->getDomainFiles($domains);
 

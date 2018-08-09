@@ -441,9 +441,13 @@ class BabelSearch extends TNTSearch
             $domain = false;
             $babelized = 1;            
         }
+        if ($domain == 'THEME_TRACKED') {
+            $domain = false;
+            $istheme = 1;            
+        }
         
         foreach($languages as $language) {            
-            $query = "SELECT COUNT(doc_id) FROM babellist WHERE " . (isset($babelized) ? 'babelized = 1 and ' : '') . "language = :language AND status = 0" . ($domain ? ' AND domain = :domain' : "");
+            $query = "SELECT COUNT(doc_id) FROM babellist WHERE " . (isset($istheme) ? 'istheme = 1 and ' : '') . (isset($babelized) ? 'babelized = 1 and ' : '') . "language = :language AND status = 0" . ($domain ? ' AND domain = :domain' : "");
             $stmtDoc = $this->index->prepare($query);
             $stmtDoc->bindValue(':language', $language);
             if ($domain) {
@@ -452,7 +456,7 @@ class BabelSearch extends TNTSearch
             $stmtDoc->execute();            
             $untranslated = $stmtDoc->fetchAll(PDO::FETCH_COLUMN);
             
-            $query = "SELECT COUNT(doc_id) FROM babellist WHERE " . (isset($babelized) ? 'babelized = 1 and ' : '') . "language = :language AND status = 1" . ($domain ? ' AND domain = :domain' : "");
+            $query = "SELECT COUNT(doc_id) FROM babellist WHERE " . (isset($istheme) ? 'istheme = 1 and ' : '') . (isset($babelized) ? 'babelized = 1 and ' : '') . "language = :language AND status = 1" . ($domain ? ' AND domain = :domain' : "");
             $stmtDoc = $this->index->prepare($query);
             $stmtDoc->bindValue(':language', $language);
             if ($domain) {
@@ -461,7 +465,7 @@ class BabelSearch extends TNTSearch
             $stmtDoc->execute();            
             $translated = $stmtDoc->fetchAll(PDO::FETCH_COLUMN);
             
-            $query = "SELECT COUNT(doc_id) FROM babellist WHERE " . (isset($babelized) ? 'babelized = 1 and ' : '') . "language = :language" . ($domain ? ' AND domain = :domain' : "");
+            $query = "SELECT COUNT(doc_id) FROM babellist WHERE " . (isset($istheme) ? 'istheme = 1 and ' : '') . (isset($babelized) ? 'babelized = 1 and ' : '') . "language = :language" . ($domain ? ' AND domain = :domain' : "");
             $stmtDoc = $this->index->prepare($query);
             $stmtDoc->bindValue(':language', $language);
             if ($domain) {
@@ -499,6 +503,11 @@ class BabelSearch extends TNTSearch
         $babelized = $post['domain'] == '*b' ? 1 : 0;
         $lang = $post['lang'];
         $status = intval($post['status']);
+        if ($domain == 'THEME_TRACKED') {
+            $domain = false;
+            $istheme = true;
+        }
+        
         
         if (is_null($this->index)) {
             $pathToIndex = $this->config['storage'] . 'babel.index';
@@ -506,7 +515,7 @@ class BabelSearch extends TNTSearch
             $this->index->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         
-        $query = "SELECT * FROM babellist WHERE " . ($babelized ? 'babelized = 1 and ' : '') . "language = :language" . ($status === 0 || $status === 1 ? ' AND status = :status' : '') . ($domain && $domain != 'babelized' ? ' AND domain = :domain' : "");
+        $query = "SELECT * FROM babellist WHERE " . (isset($istheme) ? 'istheme = 1 and ' : '') . ($babelized ? 'babelized = 1 and ' : '') . "language = :language" . ($status === 0 || $status === 1 ? ' AND status = :status' : '') . ($domain && $domain != 'babelized' ? ' AND domain = :domain' : "");
         $stmtDoc = $this->index->prepare($query);
         
         $stmtDoc->bindValue(':language', $lang);
@@ -566,11 +575,17 @@ class BabelSearch extends TNTSearch
                 mkdir($pathToExport);
             }
 
-            $query = "SELECT route, translated FROM babellist WHERE language = :language AND domain = :domain ORDER BY route";
+            if ($domain == 'THEME_TRACKED') {
+                $query = "SELECT route, translated FROM babellist WHERE istheme = 1 and language = :language ORDER BY route";
+            } else {
+                $query = "SELECT route, translated FROM babellist WHERE language = :language AND domain = :domain ORDER BY route";                 
+            }
             $stmtDoc = $this->index->prepare($query);
 
             $stmtDoc->bindValue(':language', $lang);
-            $stmtDoc->bindValue(':domain', $domain);
+            if ($domain != 'THEME_TRACKED') {
+                $stmtDoc->bindValue(':domain', $domain);
+            }
             $stmtDoc->execute(); 
             
             $export = $stmtDoc->fetchAll(PDO::FETCH_ASSOC);

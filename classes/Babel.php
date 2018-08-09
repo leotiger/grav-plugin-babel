@@ -20,7 +20,9 @@ class Babel
     protected $bool_characters = ['-', '(', ')', 'or'];
     protected $index = 'babel.index';
     protected $babelizations = [];
+    protected $theme_variables = [];
     protected $export_path = 'user://data/babel';
+    protected $babelConnector;
     
     public static $codes = [
         'af'         => [ 'name' => 'Afrikaans',                 'nativeName' => 'Afrikaans' ],
@@ -204,32 +206,66 @@ class Babel
             "driver"    => 'sqlite',
         ]);
         
-        $locator = Grav::instance()['locator'];//$this->grav['locator'];
-        if (Grav::instance()['config']->get('system.languages.translations', true)) {
-            $babelConnector = new BabelConnector();
-            $languages_folder = $locator->findResource("user://data/babel/babelized");
-            if (file_exists($languages_folder)) {
-                $languages = [];
-                $iterator = new \DirectoryIterator($languages_folder);
+        $this->babelConnector = new BabelConnector();
+    }
 
-                /** @var \DirectoryIterator $directory */
-                foreach ($iterator as $file) {
-                    if ($file->getExtension() !== 'yaml') {
-                        continue;
+    public function trackBabelizedVariables()
+    {
+        $locator = Grav::instance()['locator'];
+        $languages_folder = $locator->findResource("user://data/babel/babelized");
+        if (file_exists($languages_folder)) {
+            $iterator = new \DirectoryIterator($languages_folder);
+            foreach ($iterator as $file) {
+                if ($file->getExtension() !== 'yaml') {
+                    continue;
+                }
+                $babels = CompiledYamlFile::instance($file->getPathname())->content();
+                $babeldefinitions = [];
+                $code = pathinfo($file->getFilename())['filename'];
+                $this->babelConnector->runBabelDefs($babeldefinitions, $babels);
+                $this->babelizations[$code] = $babeldefinitions;
+            }
+        }
+    }    
+    
+    public function trackThemeVariables()
+    {
+        $locator = Grav::instance()['locator'];
+        $language_file = $locator->findResource("theme://languages" . YAML_EXT);
+        $codes = Grav::instance()['config']->get('plugins.babel.translation_sets', ['en']);
+        foreach($codes as $code => $langdef) {
+            $this->theme_variables[$langdef] = [];
+        }
+        if ($language_file) {
+            $themedefs = CompiledYamlFile::instance($language_file)->content();
+            foreach($codes as $code => $langdef) {
+                if (isset($themedefs[$langdef])) {
+                    $babels = $themedefs[$langdef];
+                    if (is_array($babels) && count($babels)) {
+                        $babeldefinitions = [];
+                        $this->babelConnector->runBabelDefs($babeldefinitions, $babels);
+                        $this->theme_variables = $babeldefinitions;
                     }
-                    $babels = CompiledYamlFile::instance($file->getPathname())->content();
-                    $babeldefinitions = [];
-                    $code = pathinfo($file->getFilename())['filename'];
-                    $babelConnector->runBabelDefs($babeldefinitions, $babels);
-                    $this->babelizations[$code] = $babeldefinitions;
-                    //Grav::instance()['log']->info(json_encode($this->babelizations[$code]));
                 }
             }
         }
-        
-        
-    }
-
+        $languages_folder = $locator->findResource("theme://languages/");
+        if (file_exists($languages_folder)) {
+            $languages = [];
+            $iterator = new \DirectoryIterator($languages_folder);
+            foreach ($iterator as $file) {
+                if ($file->getExtension() !== 'yaml') {
+                    continue;
+                }
+                $babels = CompiledYamlFile::instance($file->getPathname())->content();
+                $babeldefinitions = [];
+                $code = pathinfo($file->getFilename())['filename'];
+                $this->babelConnector->runBabelDefs($babeldefinitions, $babels);
+                $this->theme_variables = array_merge_recursive($this->theme_variables, $babeldefinitions);
+            }
+        }
+    }     
+    
     public function search($query) {
         $uri = Grav::instance()['uri'];
         $type = $uri->query('search_type');
@@ -420,6 +456,12 @@ class Babel
         } else {
             $fields->babelized = $babel->babelized;
         }
+
+        if (count($this->theme_variables) && isset($this->theme_variables[$babel->route])) {
+            $fields->istheme = 1;
+        } else {
+            $fields->istheme = 0;
+        }
         
         
         
@@ -435,6 +477,7 @@ class Babel
 
     public function getBabelDomains()
     {
+        
         return $this->babel->getBabelDomains();
     }
     

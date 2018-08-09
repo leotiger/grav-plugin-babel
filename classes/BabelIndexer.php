@@ -200,6 +200,7 @@ class BabelIndexer extends TNTIndexer
                     translated TEXT,
                     original TEXT,
                     translations TEXT,
+                    istheme INTEGER,
                     babelized INTEGER)");
         
         $this->index->exec("CREATE TABLE IF NOT EXISTS fields (
@@ -386,6 +387,7 @@ class BabelIndexer extends TNTIndexer
         $row->forget('translations');
         $row->forget('rtl');
         $row->forget('babelized');
+        $row->forget('istheme');
         $stems = $row->map(function ($columnContent, $columnName) use ($row) {
             return $this->stemText($columnContent);
         });
@@ -553,7 +555,7 @@ class BabelIndexer extends TNTIndexer
     public function saveBabelList($babel, $docId)
     {
 
-        $insert = "INSERT INTO babellist (doc_id, route, domain, language, rtl, status, originalstatus, translated, original, translations, babelized) VALUES (:doc, :route, :domain, :language, :rtl, :status, :originalstatus, :translated, :original, :translations, :babelized)";
+        $insert = "INSERT INTO babellist (doc_id, route, domain, language, rtl, status, originalstatus, translated, original, translations, istheme, babelized) VALUES (:doc, :route, :domain, :language, :rtl, :status, :originalstatus, :translated, :original, :translations, :istheme, :babelized)";
         $stmt   = $this->index->prepare($insert);
         $stmt->bindValue(':doc', $docId);
         $stmt->bindValue(':route', $babel->get('route'));
@@ -565,6 +567,7 @@ class BabelIndexer extends TNTIndexer
         $stmt->bindValue(':translated', $babel->get('translated'));
         $stmt->bindValue(':original', $babel->get('original'));
         $stmt->bindValue(':translations', $babel->get('translations'));
+        $stmt->bindValue(':istheme', $babel->get('istheme'));
         $stmt->bindValue(':babelized', $babel->get('babelized'));
         try {
             $stmt->execute();

@@ -33,7 +33,7 @@ Important: Please merge your changes. Without merging changes are lost once you 
 
 You can export language packs based on domains, e.g. export translations sets related with PLUGIN_ADMIN. The language pack includes all exported
 definitions. Please take into account that you have to trigger the export for each language. Export functionality is only available when a language domain
-is active but not for all domains and not for the *babelized* filter.
+is active but not for all domains and not for the *babelized* filter. From version 1.1.1 onwards you can export as well theme language packages.
 
 The plugin offers three special filters that represent virtual domains:
 
@@ -41,7 +41,7 @@ The plugin offers three special filters that represent virtual domains:
 * babelized (items edited with the Babel plugin)
 * unclassified
 
-The last filter loads a collection of variables ( that 
+The last filter loads a collection of variables that are directly attached to the root without a parent domain scope. 
 
 ## What's missing
 

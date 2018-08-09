@@ -1,3 +1,10 @@
+# v1.1.1
+## 09-08-2018
+
+1. [](#bugfix)
+    * Fix order of flat array elements with numeric keys.
+    * Display flat array elements in correct order (keys ordered alphabetically and not numerically)
+
 # v1.1.0
 ## 08-08-2018
 

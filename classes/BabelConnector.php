@@ -30,7 +30,6 @@ class BabelConnector extends \PDO
         $filter = $config->get('plugins.babel.filter');
         $default_process = $config->get('plugins.babel.index_page_by_default');
         $gbabel = new Babel();
-        
 
         $codes = Grav::instance()['config']->get('plugins.babel.translation_sets', ['en']);
         
@@ -48,12 +47,18 @@ class BabelConnector extends \PDO
                 $babelobjects[] = $this->createBabelDef($definition, $langdef);
             }
         }
+
+        $gbabel->trackBabelizedVariables();
+        
+        $theme_variables = $gbabel->trackThemeVariables();
+        
         
         foreach ($babelobjects as $babelobj) {
                 $counter++;
                 $process = $default_process;
                 try {
                     $fields = $gbabel->indexBabelData($babelobj);
+                    
                     $results[] = (array) $fields;
                     echo("Added $counter $route\n");
                 } catch (\Exception $e) {
@@ -91,7 +96,7 @@ class BabelConnector extends \PDO
             $babelobj = new \stdClass();
             $id = $code . '.' . $definition;
             $babelobj->id = $id;
-            $babelobj->route = $definition;
+            $babelobj->route = $definition;            
             $babelobj->domain = explode('.', $definition)[0];
             $babelobj->language = $code;
             $definition = str_replace('unclassified.', '', $definition);

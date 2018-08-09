@@ -1,6 +1,9 @@
 # v1.1.1
 ## 09-08-2018
 
+1. [](#new)
+    * Track theme variables
+    * Add export for theme language packages
 1. [](#bugfix)
     * Fix order of flat array elements with numeric keys.
     * Display flat array elements in correct order (keys ordered alphabetically and not numerically)

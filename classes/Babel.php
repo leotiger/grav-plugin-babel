@@ -470,6 +470,9 @@ class Babel
         } else {
             $fields->routeorder = '00000';
         }
+        array_pop($path);
+        $fields->routebase = implode('.', $path);
+        
         return $fields;
     }
     

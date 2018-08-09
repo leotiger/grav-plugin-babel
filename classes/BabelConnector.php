@@ -96,7 +96,7 @@ class BabelConnector extends \PDO
             $babelobj = new \stdClass();
             $id = $code . '.' . $definition;
             $babelobj->id = $id;
-            $babelobj->route = $definition;
+            $babelobj->route = $definition;            
             $babelobj->domain = explode('.', $definition)[0];
             $babelobj->language = $code;
             $definition = str_replace('unclassified.', '', $definition);

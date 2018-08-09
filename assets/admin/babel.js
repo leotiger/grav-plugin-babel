@@ -171,9 +171,10 @@
             $('#babels_table').dataTable( {
                 dom: "Bfrtip",
                 autoWidth: false,
+                ordering: false,
                 columns: [                    
                     { data: null, render: function ( data, type, row ) {
-                        var $col = '<div class="babel_definition"><div class="babel_save' + (data.babelized == '1' ? ' button' : '') + '"><i class="fa fa-save"></i></div><input class="babel_doc_id" type="hidden" value="' + data.doc_id + '" />' +                        
+                        var $col =  '<div class="babel_definition"><div class="babel_save' + (data.babelized == '1' ? ' button' : '') + '"><i class="fa fa-save"></i></div><input class="babel_doc_id" type="hidden" value="' + data.doc_id + '" />' +                        
                                     data.language +
                                     '<dl><dt>' + data.domain + '</dt><dd>' + data.doc_id.replace(data.language + '.' + data.domain + '.', '') + '</dd></dl></div>';
                         return $col;

@@ -463,10 +463,13 @@ class Babel
             $fields->istheme = 0;
         }
         
-        
-        
-        //$fileds->translations = $babel->translations;
-        //Grav::instance()->fireEvent('onBabelIndex', new Event(['page' => $page, 'fields' => $fields]));
+        $path = explode('.', $babel->route);
+        if (ctype_digit($path[count($path) - 1])) {
+            $routeorder = str_pad($path[count($path) - 1], 5, '0', STR_PAD_LEFT);
+            $fields->routeorder = $routeorder;
+        } else {
+            $fields->routeorder = '00000';
+        }
         return $fields;
     }
     

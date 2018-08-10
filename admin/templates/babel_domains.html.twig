@@ -12,19 +12,23 @@
             text-align: center;
         }
     </style>
+
     <div class="index-status">
         {% if babel_index_status.status %}
-            <button id="babel-index" class="button reindex babel-reindex">{{ "PLUGIN_BABEL.REINDEX"|tu }}</button>
+            <button id="babel-index" class="button reindex babel-reindex hint--bottom" data-hint="{{ "PLUGIN_BABEL.REINDEX_HINT"|t|e('html_attr') }}">{{ "PLUGIN_BABEL.REINDEX"|tu }}</button>
             <span class="babel-status success"><i class="fa fa-language"></i> {{ babel_index_status.msg }}</span>
         {% else %}
-            <button id="babel-index" class="button critical babel-reindex">{{ "PLUGIN_BABEL.INDEX"|tu }}</button>
+            <button id="babel-index" class="button critical babel-reindex hint--bottom" data-hint="{{ "PLUGIN_BABEL.INDEX_HINT"|t|e('html_attr') }}">{{ "PLUGIN_BABEL.INDEX"|tu }}</button>
             <span class="babel-status error"><i class="fa fa-warning"></i> {{ babel_index_status.msg }}</span>
         {% endif %}
         {% if babelstats %}        
-            <button id="babel-reset" class="button reset babel-reset">{{ "PLUGIN_BABEL.RESET"|tu }}</button>            
-            <button id="babel-merge" class="button merge babel-merge">{{ "PLUGIN_BABEL.MERGE"|tu }}</button>            
+            <button id="babel-reset" class="button reset babel-reset hint--bottom" data-hint="{{ "PLUGIN_BABEL.RESET_HINT"|t|e('html_attr') }}">{{ "PLUGIN_BABEL.RESET"|tu }}</button>            
+            <button id="babel-merge" class="button merge babel-merge hint--bottom" data-hint="{{ "PLUGIN_BABEL.MERGE_HINT"|t|e('html_attr') }}">{{ "PLUGIN_BABEL.MERGE"|tu }}</button>            
         {% endif %}
         <div class="warning babel-error-details"></div>
+        <div class="intro-hint">
+            {{ "PLUGIN_BABEL.INTRO_HINT"|tu }}
+        </div>
     </div>
     
     
@@ -34,23 +38,45 @@
         <!--<input type="text" placeholder="{{ "PLUGIN_BABEL.SEARCH"|t|e }}" />
         <br />-->
         {% if babelstats %}
-            <select id="babeldomains" data-domainfiles="{{ domainfiles|json_encode() }}">            
+        <div class="form-select form-select-wrapper large">
+            <label>
+            <span class="data--hint" data-hint="{{ "PLUGIN_BABEL.DOMAIN_FILTER_HINT"|t|e('html_attr') }}">
+            {{ "PLUGIN_BABEL.DOMAIN_FILTER"|tu }}
+            </span>
+            </label>
+            <select id="babeldomains" data-domainfiles="{{ domainfiles|json_encode() }}" data-grav-selectize style="vertical selectize">            
             <option value="*" {{ current_domain == '*' ? 'selected="selected"' : '' }}>{{ "PLUGIN_BABEL.ALL_DOMAINS"|tu }}</option>
             <option value="*b" {{ current_domain == '*b' ? 'selected="selected"' : '' }}>{{ "PLUGIN_BABEL.BABEL_TOUCHED"|tu }}</option>
             {% for domain in domains %}
                 <option value="{{  domain }}" {{ current_domain == domain ? 'selected="selected"' : '' }}>{{ domain }}</option>
             {% endfor %}        
-        </select>
+            </select>
+        </div>
         <table>
             <thead>
                 <tr>
                     <th>{{ "PLUGIN_BABEL.TRANSLATION_SET"|tu }}</th>
-                    <!--<th>{{ "PLUGIN_BABEL.DOMAIN"|tu }}</th>-->
-                    <th>{{ "PLUGIN_BABEL.DEFINED"|tu }}</th>
-                    <th>{{ "PLUGIN_BABEL.TRANSLATED"|tu }}</th>
-                    <th>{{ "PLUGIN_BABEL.UNTRANSLATED"|tu }}</th>
+                    <th>
+                        <span class="hint--bottom" data-hint="{{ "PLUGIN_BABEL.STATS_COLUMN_HINT"|t|e('html_attr') }}">
+                        {{ "PLUGIN_BABEL.DEFINED"|tu }}
+                        </span>
+                    </th>
+                    <th>
+                        <span class="data--hint" data-hint="{{ "PLUGIN_BABEL.STATS_COLUMN_HINT"|t|e('html_attr') }}">
+                        {{ "PLUGIN_BABEL.TRANSLATED"|tu }}
+                        </span>
+                    </th>
+                    <th>
+                        <span class="hint--bottom" data-hint="{{ "PLUGIN_BABEL.STATS_COLUMN_HINT"|t|e('html_attr') }}">
+                        {{ "PLUGIN_BABEL.UNTRANSLATED"|tu }}
+                        </span>
+                    </th>
                     <th>{{ "PLUGIN_BABEL.RATIO"|tu }}</th>
-                    <th>{{ "PLUGIN_BABEL.EXPORT"|tu }}</th>
+                    <th>
+                        <span class="hint--bottom-left" data-hint="{{ "PLUGIN_BABEL.EXPORT_HINT"|t|e('html_attr') }}">
+                        {{ "PLUGIN_BABEL.EXPORT"|tu }}
+                        </span>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -90,7 +116,7 @@
                 
             </tr>
         {% endfor %}
-            </tbody>
+            </tbody>            
         </table>
         {% endif %}
         <div id="babels">
@@ -99,16 +125,27 @@
         <table id='babels_table' class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
             <thead>
                 <tr>
-                    <th>{{ "PLUGIN_BABEL.DEFINITION"|tu }}</th>
-                    <th>{{ "PLUGIN_BABEL.TRANSLATION"|tu }}</th>
-                    <th>{{ "PLUGIN_BABEL.TRANSLATIONS"|tu }}</th>
+                    <th>
+                        <span class="hint--bottom" data-hint="{{ "PLUGIN_BABEL.DEFINITION_HINT"|t|e('html_attr') }}">                        
+                        {{ "PLUGIN_BABEL.DEFINITION"|tu }}
+                        </span>
+                    </th>
+                    <th>
+                        <span class="hint--bottom" data-hint="{{ "PLUGIN_BABEL.TRANSLATION_HINT"|t|e('html_attr') }}">                        
+                        {{ "PLUGIN_BABEL.TRANSLATION"|tu }}
+                        </span>
+                    </th>
+                    <th>
+                        <span class="hint--bottom-left" data-hint="{{ "PLUGIN_BABEL.TRANSLATIONS_HINT"|t|e('html_attr') }}">                        
+                        {{ "PLUGIN_BABEL.TRANSLATIONS"|tu }}
+                    </th>
                 </tr>
             </thead>
             <tbody>
                  
             </tbody>
         </table>
-
+        {% if domainfiles and domainfiles|length %}
         <table id='babel_domain_packages' class="table table-striped table-no-bordered table-hover" cellspacing="0" width="100%" style="width:100%">
             <thead>
                 <tr>
@@ -125,8 +162,6 @@
                 {% endfor %}                                 
             </tbody>
         </table>
-                
-        <div 
-                
+        {% endif %}
     </div>
 {% endblock %}

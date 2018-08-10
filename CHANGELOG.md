@@ -1,6 +1,24 @@
+# v1.1.2
+## 10-08-2018
+
+1. [](#improved)
+    * Add quicktray icon and make entry in admin menu sidebar optional (thx olevik)
+    * remove unnecessary logging code
+    * add hints to the interface
+    * apply GRAV styles to some elements
+    * remove bootstrap css
+    * better documentation in README
+1. [](#bugfix)
+    * Copy correct existing translation into empty translation if user click on language identifier of existing translation
+    * Fix compatibility issue: TNTSearch uses an older vendor version of the teamtnt/tntsearch (thx iusvar)
+
+
 # v1.1.1
 ## 09-08-2018
 
+1. [](#new)
+    * Track theme variables
+    * Add export for theme language packages
 1. [](#bugfix)
     * Fix order of flat array elements with numeric keys.
     * Display flat array elements in correct order (keys ordered alphabetically and not numerically)

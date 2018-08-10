@@ -84,6 +84,14 @@ class BabelPlugin extends Plugin
      */
     public function onAdminTwigSiteVariables()
     {
+        
+        $this->grav['assets']->addJs('plugin://babel/assets/admin/babel-quicktray.js');        
+        // Avoid unncessary processing...
+        $uri = $this->grav['uri'];
+        if (strpos($uri->path(), $this->config->get('plugins.admin.route') . '/' . $this->route) === false) {                
+            return;
+        }       
+        
         $twig = $this->grav['twig'];
         list($status, $msg) = $this->getIndexCount();
         
@@ -96,13 +104,8 @@ class BabelPlugin extends Plugin
             //$this->grav['babel']->createIndex();
         } else {
             $twig->twig_vars['babel_index_status'] = ['status' => $status, 'msg' => $msg];
-            // Avoid unncessary processing...
-            $uri = $this->grav['uri'];
-            if (strpos($uri->path(), $this->config->get('plugins.admin.route') . '/' . $this->route) === false) {                
-                return;
-            }       
             
-            $this->grav['assets']->addCss('plugin://babel/bower_components/bootstrap/dist/css/bootstrap.css');
+            //$this->grav['assets']->addCss('plugin://babel/bower_components/bootstrap/dist/css/bootstrap.css');
             $this->grav['assets']->addCss('plugin://babel/assets/admin/babel.css');
             $this->grav['assets']->addCss('plugin://babel/bower_components/datatables.net-bs/css/dataTables.bootstrap.css');
             $this->grav['assets']->addCss('plugin://babel/bower_components/datatables.net-responsive-bs/css/responsive.bootstrap.css');
@@ -149,10 +152,21 @@ class BabelPlugin extends Plugin
      */
     public function onAdminMenu()
     {
-        $this->grav['twig']->plugins_hooked_nav['PLUGIN_BABEL.BABEL'] = [
-            'route' => $this->route,
-            'icon'  => 'fa-language'
+        /** no need for full menu item, implement as optional according to recommendation by olevik **/
+        if (Grav::instance()['config']->get('plugins.babel.adminmenu', false)) {
+            $this->grav['twig']->plugins_hooked_nav['PLUGIN_BABEL.BABEL'] = [
+                'route' => $this->route,
+                'icon'  => 'fa-language'
+            ];
+        }
+        $options = [
+            'authorize' => '',
+            'hint' => 'Babel translator',
+            'class' => 'babel-translator-admin',
+            'icon' => 'fa-language'
         ];
+        $this->grav['twig']->plugins_quick_tray['Babel Translator'] = $options;
+        
     }
     
     /**

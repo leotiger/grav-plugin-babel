@@ -112,6 +112,7 @@ class BabelSearch extends TNTSearch
      *
      * @return array
      */
+    /*
     public function search($phrase, $numOfResults = 100)
     {
         $startTimer = microtime(true);
@@ -170,7 +171,8 @@ class BabelSearch extends TNTSearch
             'execution_time' => round($stopTimer - $startTimer, 7) * 1000 ." ms"
         ];
     }
-
+    */
+    
     /**
      * @param string $phrase
      * @param int    $numOfResults
@@ -529,8 +531,6 @@ class BabelSearch extends TNTSearch
         
         $result = $stmtDoc->fetchAll(PDO::FETCH_ASSOC);
         
-        Grav::instance()['log']->info(json_encode($result));
-        
         return $result;
     }
     
@@ -673,6 +673,8 @@ class BabelSearch extends TNTSearch
                 $yaml = new Data($translations);
                 $yaml->file($yamlfile);
                 $yaml->save();
+            } elseif (file_exists($data_path . DS . $langdef . '.yaml')) {
+                unlink($data_path . DS . $langdef . '.yaml');
             }
         }
     }    

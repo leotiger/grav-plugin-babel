@@ -108,7 +108,7 @@
         });
         
         $(document).on('click', '.admin-block .babel_copy', function() {            
-            var $translation = $(this).closest('tr').find('.babel-translation').html();
+            var $translation = $(this).closest('.babel_translation').find('.babel-translation').html();
             var $targetval = $(this).closest('tr').find('.babel_translated').val();
             if ($targetval === '') {
                 $(this).closest('tr').find('.babel_translated').val($translation);
@@ -176,7 +176,7 @@
                     { data: null, render: function ( data, type, row ) {
                         var $col =  '<div class="babel_definition"><div class="babel_save' + (data.babelized == '1' ? ' button' : '') + '"><i class="fa fa-save"></i></div><input class="babel_doc_id" type="hidden" value="' + data.doc_id + '" />' +                        
                                     data.language +
-                                    '<dl><dt>' + data.domain + '</dt><dd>' + data.doc_id.replace(data.language + '.' + data.domain + '.', '') + '</dd></dl></div>';
+                                    '<div>' + data.domain + '</div><div><strong>' + data.doc_id.replace(data.language + '.' + data.domain + '.', '') + '</strong></div>';
                         return $col;
                     } },
                     { data: null, render: function ( data, type, row ) {
@@ -192,7 +192,7 @@
                                 var $translations = JSON.parse(data.translations);                    
                                 var $babel_translations = '<div class="babel_translations">';
                                 $.each($translations, function(key, value) {
-                                   $babel_translations += '<button class="babel_copy"><strong>' + key + '</strong>:</button> <translation class="babel-translation" lang="' + key + '" dir="' + value[1] + '">' + value[0] + '</translation><br />';
+                                   $babel_translations += '<div class="babel_translation"><button class="babel_copy"><strong>' + key + '</strong>:</button> <translation class="babel-translation" lang="' + key + '" dir="' + value[1] + '">' + value[0] + '</translation></div>';
                                 });
                                 return $babel_translations + '</div>'
                             }

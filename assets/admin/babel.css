@@ -39,6 +39,7 @@
     display: inline-block;    
     text-align: center;
     font-size:larger;
+    margin-right: 10px;
 }
 
 #admin-main .admin-block .babel_save i {
@@ -52,3 +53,57 @@
     display: none;
 }
 
+div.dataTables_wrapper div.dataTables_paginate {
+    margin: 0;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.admin-block .pagination {
+    display: inline-block;
+    padding-left: 0;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+.admin-block .pagination > li {
+    display: inline;
+}
+
+.admin-block .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    z-index: 3;
+    color: #fff;
+    cursor: default;
+    background-color: #337ab7;
+    border-color: #337ab7;
+}
+
+.admin-block .pagination > li > a, .pagination > li > span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    background: #0090D9;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    border-top-color: rgb(221, 221, 221);
+    border-right-color: rgb(221, 221, 221);
+    border-bottom-color: rgb(221, 221, 221);
+    border-left-color: rgb(221, 221, 221);
+    white-space: nowrap;
+}
+
+#admin-main .admin-block .pagination a,
+#admin-main .admin-block .pagination a:hover,
+#admin-main .admin-block .pagination a:visited
+{
+    color: rgba(255,255,255,0.85);
+}
+
+
+#admin-main .admin-block .input-sm {
+    min-width: 50%;
+}

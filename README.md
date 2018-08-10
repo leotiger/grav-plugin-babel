@@ -21,34 +21,38 @@ With the advent of the Babel plugin this changes a bit.
 ## Usage
 
 To use the plugin you have to enable language support for you GRAV instance and you have to configure as well the languages you want to
-handle with Babel in the plugin configuration. The languages handled by Babel do not have to be identical with the languages enabled for your
+handle with Babel in the configuration of the Babel plugin. The languages handled by Babel do not have to be identical with the languages enabled for your
 instance. This allows you to prepare additional languages before activating new ones for your site.
 
-Once you have enabled the Babel languages you can index all language variables and existing translations. There is one magic keyboard shortcut
-available Command/Ctrl + s which allows you to save right from within of the textarea field used to edit translations. 
+You can access Babel using the dedicated tray icon or by using the link in the plugin configuration. If you use Babel frequently you may activate a permanent Admin menu link
+to Babel.
 
-Babel identifies edited and merged definitions when a re-index takes place. This allows the plugin to only merge edited definitions.
+On first time load of the Babel administration page, you will be asked to create an index. Once the index is created, you will see a breakdown
+table informing about the general status of translated and untranslated variables and you may filter this data using the domain filter selector.
 
-Important: Please merge your changes. Without merging changes are lost once you re-index.
+If there are defined, translated or untranslated items in a given context (language, domain) available you can load the translations using the 
+blue buttons in the corresponding rows of the breakdown table.
 
-You can export language packs based on domains, e.g. export translations sets related with PLUGIN_ADMIN. The language pack includes all exported
-definitions. Please take into account that you have to trigger the export for each language. Export functionality is only available when a language domain
-is active but not for all domains and not for the *babelized* filter. From version 1.1.1 onwards you can export as well theme language packages.
+Once you've loaded a list of language variables you can edit translations for a given language. Inside of the textarea you can use Ctrl+s or
+Command+s to save your edited translation. If the translation is empty you can copy existing translations in other languages into the empty field by 
+clicking on the language shortcode in the right column next to the translation editor.
 
-The plugin offers three special filters that represent virtual domains:
+To load the changed translations in your current instance, you have to merge them using the Merge button.
 
-* all domains
-* babelized (items edited with the Babel plugin)
-* unclassified
+If you load a language domain via a selection option of the filter, e.g. PLUGIN_BABEL or THEME_TRACKED you are presented with an additional option
+in the translation breakdown table: the export button. The export button allows you to export and download translation packages. If you don't see 
+your translation package in the bottom region of the page after running an export, please reload the page.
 
-The last filter loads a collection of variables that are directly attached to the root without a parent domain scope. 
+To reset the system, you can use the Reset button. The reset will remove the Babel edit flag and recover the original definitions. You have to confirm this
+operation with a new merge. The merge routine, if it does not detect entries changed with Babel, removes existing merge files from the instance.
+
 
 ## What's missing
 
-* a common, shared language repository for GRAV
+* a common, shared language repository for GRAV, Babel will probably integrate this using the Crowdin platform, already used for GRAV and the GRAV
+Admin plugin
 * integration with the language repository
 * automatic detection of new variables after upgrades of GRAV, plugins and themes (you can nevertheless always re-index manually)
-* Bit of code cleanup and less dependencies (bootstrap 3, datatables-net)
 * Mark translations as private allowing for alternative public value
 
 ## Installation

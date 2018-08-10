@@ -11,8 +11,11 @@ en:
         DOMAIN: Domain
         SEARCH: Search translations
         DEFINITION: Definition
+        DEFINITION_HINT: The variable identifier
         TRANSLATION: Translation
+        TRANSLATION_HINT: You can save your changes with CTRL + s or COMMAND + s if the cursor is placed inside of the textarea edit field.
         TRANSLATIONS: Translations
+        TRANSLATIONS_HINT: Click on the language code to copy an existing translation into the textarea if empty.
         REINDEX: Reindex Babel
         INDEX: Index Babel
         ALL_DOMAINS: All translation domains
@@ -20,7 +23,17 @@ en:
         RESET: Reset definitions
         MERGE: Merge
         EXPORT: Export
+        EXPORT_HINT: Use the export button to export and add the definitions for a given language and domain to the corresponding language pack of the domain. You can download exported language sets below. If you don't see your export package please reload the page.
         DOMAIN_PACKAGE: Exported Language Pack
         HIDE_SYSTEM: Hide system
         HIDE_SYSTEM_HELP: Exclude GRAV System variables. You should not disable this option without a deep knowledge of the GRAV system internals and programming skills.
- 
+        ADMIN_MENU: Add to sidebar admin menu
+        LINK: Link
+        DOMAIN_FILTER: Filter definitions
+        DOMAIN_FILTER_HINT: Filter and load definitions by domain, e.g. load all definitions for PLUGIN_ADMIN, PLUGIN_BABEL, etc.
+        INDEX_HINT: Babel will index and classify all available language definitions. Once indexed, you can edit translations
+        REINDEX_HINT: You may want to re-index after installing or updating GRAV plugins, themes, etc.
+        RESET_HINT: Reset removes the babelized flag from edits done with Babel. If you confirm this action using 'Merge' afterwards, you complete the reset.
+        MERGE_HINT: Use 'Merge' to save, maintain and load your edits in the current instance.
+        INTRO_HINT: Buttons and/or table column headers provide some contextual help in tooltips.
+        STATS_COLUMN_HINT: Please use buttons in this column to load the corresponding translations.

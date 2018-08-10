@@ -489,11 +489,6 @@ class Babel
     
     public function getBabels($post)
     {
-        if ($post['domain'] == '*b') {
-            $test = $this->babel->getBabels($post);
-            Grav::instance()['log']->info($test);
-            return $test;
-        }
         return $this->babel->getBabels($post);
     }
 

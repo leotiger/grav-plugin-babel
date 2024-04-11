@@ -1,12 +1,12 @@
 name: Babel
-version: 1.1.5
+version: 1.1.6
 description: Translation services for GRAV
 icon: language
 author:
   name: Uli Hake
   email: uli.hake@gmaill.com
   url: http://www.saveva.com
-keywords: plugin, i18n, translation, language administration, language synchronization
+keywords: plugin, i18n, translation, develop, language administration, language synchronization
 homepage: https://github.com/leotiger/grav-plugin-babel
 bugs: https://github.com/leotiger/grav-plugin-babel/issues
 docs: https://github.com/leotiger/grav-plugin-babel/blob/master/README.md

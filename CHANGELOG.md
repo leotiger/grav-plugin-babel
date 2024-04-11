@@ -1,3 +1,9 @@
+# v1.1.3
+## 12-04-2024
+
+1. [](#bugfix)
+    * Make compatible with PHP version 8+
+
 # v1.1.2
 ## 10-08-2018
 

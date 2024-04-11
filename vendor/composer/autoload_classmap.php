@@ -7,5 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
-    'Grav\\Plugin\\TNTSearchPlugin' => $baseDir . '/tntsearch.php',
+    'Grav\\Plugin\\babelPlugin' => $baseDir . '/babel.php',
 );

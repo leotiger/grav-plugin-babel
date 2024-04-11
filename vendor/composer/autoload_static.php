@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit6693564509f9a3fa6ed2c7bf76fdb017
+class ComposerStaticInit4e3c7ae7c03940cb424cbd9175ee8976
 {
     public static $files = array (
         '290dd4ba42f11019134caca05dbefe3f' => __DIR__ . '/..' . '/teamtnt/tntsearch/helper/helpers.php',
@@ -39,15 +39,15 @@ class ComposerStaticInit6693564509f9a3fa6ed2c7bf76fdb017
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
-        'Grav\\Plugin\\TNTSearchPlugin' => __DIR__ . '/../..' . '/tntsearch.php',
+        'Grav\\Plugin\\babelPlugin' => __DIR__ . '/../..' . '/babel.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit6693564509f9a3fa6ed2c7bf76fdb017::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit6693564509f9a3fa6ed2c7bf76fdb017::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit6693564509f9a3fa6ed2c7bf76fdb017::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4e3c7ae7c03940cb424cbd9175ee8976::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4e3c7ae7c03940cb424cbd9175ee8976::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit4e3c7ae7c03940cb424cbd9175ee8976::$classMap;
 
         }, null, ClassLoader::class);
     }

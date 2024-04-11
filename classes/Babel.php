@@ -13,10 +13,8 @@ use Grav\Common\File\CompiledYamlFile;
 use Grav\Plugin\BabelConnector;
 use \Grav\Common\Twig\TwigExtension;
 use Grav\Plugin\BabelPlugin;
-//use Grav\Plugin\Babel\BabelConnector;
 
 require __dir__ . '/BabelConnector.php';
-
 
 class Babel
 {
@@ -383,7 +381,7 @@ class Babel
             return;
         }
 
-        $this->babel->setDatabaseHandle(new \Grav\Plugin\Babel\BabelConnector());
+        $this->babel->setDatabaseHandle($this->babelConnector);
 
         try {
             $this->babel->selectIndex($this->index);
@@ -405,7 +403,7 @@ class Babel
             return;
         }
 
-        $this->babel->setDatabaseHandle(new \Grav\Plugin\Babel\BabelConnector());
+        $this->babel->setDatabaseHandle($this->babelConnector);
 
         try {
             $this->babel->selectIndex($this->index);

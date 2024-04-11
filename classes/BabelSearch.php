@@ -62,11 +62,16 @@ class BabelSearch extends TNTSearch
     /**
      * @param TokenizerInterface $tokenizer
      */
-    public function setTokenizer(TokenizerInterface $tokenizer)
+    public function setTokenizer()
     {
-        $this->tokenizer = $tokenizer;
+        $tokenizer = $this->getValueFromInfoTable('tokenizer');
+        if ($tokenizer) {
+            $this->tokenizer = new $tokenizer;
+        } else {
+            $this->tokenizer = isset($this->config['tokenizer']) ? new $this->config['tokenizer'] : new Tokenizer;
+        }
     }
-
+    
     /**
      * @param string $indexName
      * @param boolean $disableOutput

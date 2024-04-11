@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "67301e9bb7c9f9bfbfe01fc7c72c13bd",
+    "content-hash": "129ce95bf1d9557f0d65f9269abbd742",
     "packages": [
         {
             "name": "teamtnt/tntsearch",

@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'leotiger/grav-plugin-babel',
-        'pretty_version' => 'dev-develop',
-        'version' => 'dev-develop',
-        'reference' => '8bb008f4aba27695eef63a3c3b66657d2e5305e5',
+        'pretty_version' => '1.1.6',
+        'version' => '1.1.6.0',
+        'reference' => NULL,
         'type' => 'grav-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'leotiger/grav-plugin-babel' => array(
-            'pretty_version' => 'dev-develop',
-            'version' => 'dev-develop',
-            'reference' => '8bb008f4aba27695eef63a3c3b66657d2e5305e5',
+            'pretty_version' => '1.1.6',
+            'version' => '1.1.6.0',
+            'reference' => NULL,
             'type' => 'grav-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

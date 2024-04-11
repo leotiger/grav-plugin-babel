@@ -1,5 +1,4 @@
 <?php
-
 namespace Grav\Plugin\Babel;
 
 use PDO;
@@ -18,10 +17,10 @@ use RocketTheme\Toolbox\File\File;
 use Grav\Common\Data\Data;
 use Grav\Common\Grav;
 use Grav\Common\File\CompiledYamlFile;
+use Grav\Plugin\BabelPlugin;
+use Grav\Plugin\Babel\Babel;
 
-
-
-class BabelSearch extends TNTSearch
+class BabelSearch
 {
     public $config;
     public $asYouType            = false;
@@ -35,6 +34,7 @@ class BabelSearch extends TNTSearch
     public $fuzzy_distance       = 2;
     protected $dbh               = null;
 
+        
     /**
      * @param array $config
      *
@@ -71,7 +71,7 @@ class BabelSearch extends TNTSearch
             $this->tokenizer = isset($this->config['tokenizer']) ? new $this->config['tokenizer'] : new Tokenizer;
         }
     }
-    
+
     /**
      * @param string $indexName
      * @param boolean $disableOutput

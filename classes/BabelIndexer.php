@@ -20,7 +20,7 @@ use TeamTNT\TNTSearch\Support\TokenizerInterface;
 use TeamTNT\TNTSearch\Indexer\TNTIndexer;
 
 
-class BabelIndexer extends TNTIndexer
+class BabelIndexer
 {
     protected $index              = null;
     protected $dbh                = null;

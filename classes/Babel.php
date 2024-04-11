@@ -10,8 +10,13 @@ use TeamTNT\TNTSearch\Exceptions\IndexNotFoundException;
 use Grav\Plugin\Babel\BabelSearch;
 use SQLite3;
 use Grav\Common\File\CompiledYamlFile;
-use Grav\Plugin\Babel\BabelConnector;
+use Grav\Plugin\BabelConnector;
 use \Grav\Common\Twig\TwigExtension;
+use Grav\Plugin\BabelPlugin;
+//use Grav\Plugin\Babel\BabelConnector;
+
+require __dir__ . '/BabelConnector.php';
+
 
 class Babel
 {
@@ -23,6 +28,7 @@ class Babel
     protected $theme_variables = [];
     protected $export_path = 'user://data/babel';
     protected $babelConnector;
+        
     
     public static $codes = [
         'af'         => [ 'name' => 'Afrikaans',                 'nativeName' => 'Afrikaans' ],
@@ -206,7 +212,7 @@ class Babel
             "driver"    => 'sqlite',
         ]);
         
-        $this->babelConnector = new BabelConnector();
+        $this->babelConnector = new \Grav\Plugin\Babel\BabelConnector();
     }
 
     public function trackBabelizedVariables()
@@ -353,7 +359,7 @@ class Babel
     
     public function createIndex()
     {
-        $this->babel->setDatabaseHandle(new BabelConnector);
+        $this->babel->setDatabaseHandle($this->babelConnector);
         $indexer = $this->babel->createIndex($this->index);
 
         // Set the stemmer language if set
@@ -377,7 +383,7 @@ class Babel
             return;
         }
 
-        $this->babel->setDatabaseHandle(new BabelConnector);
+        $this->babel->setDatabaseHandle(new \Grav\Plugin\Babel\BabelConnector());
 
         try {
             $this->babel->selectIndex($this->index);
@@ -399,7 +405,7 @@ class Babel
             return;
         }
 
-        $this->babel->setDatabaseHandle(new BabelConnector);
+        $this->babel->setDatabaseHandle(new \Grav\Plugin\Babel\BabelConnector());
 
         try {
             $this->babel->selectIndex($this->index);

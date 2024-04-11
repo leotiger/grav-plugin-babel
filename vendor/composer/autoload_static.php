@@ -17,8 +17,8 @@ class ComposerStaticInit4e3c7ae7c03940cb424cbd9175ee8976
         ),
         'G' => 
         array (
-            'Grav\\Plugin\\TNTSearch\\' => 22,
             'Grav\\Plugin\\Console\\' => 20,
+            'Grav\\Plugin\\Babel\\' => 18,
         ),
     );
 
@@ -27,13 +27,13 @@ class ComposerStaticInit4e3c7ae7c03940cb424cbd9175ee8976
         array (
             0 => __DIR__ . '/..' . '/teamtnt/tntsearch/src',
         ),
-        'Grav\\Plugin\\TNTSearch\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/classes',
-        ),
         'Grav\\Plugin\\Console\\' => 
         array (
             0 => __DIR__ . '/../..' . '/cli',
+        ),
+        'Grav\\Plugin\\Babel\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/classes',
         ),
     );
 

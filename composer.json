@@ -21,7 +21,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Grav\\Plugin\\TNTSearch\\": "classes/",
+      "Grav\\Plugin\\Babel\\": "classes/",
       "Grav\\Plugin\\Console\\": "cli/"
     },
     "classmap":  ["babel.php"]

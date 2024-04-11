@@ -1,3 +1,10 @@
+# v1.1.4
+## 12-04-2024
+
+1. [](#bugfix)
+    * Make compatible with PHP version 8+
+    * Fix problems with packaged TNTSearch Library
+
 # v1.1.3
 ## 12-04-2024
 

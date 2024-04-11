@@ -3,6 +3,7 @@
 
 1. [](#bugfix)
     * Make compatible with PHP version 8+
+    * Update TNTSearch Vendor library
 
 # v1.1.2
 ## 10-08-2018

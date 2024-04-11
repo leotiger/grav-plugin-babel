@@ -1,19 +1,27 @@
 <?php
 namespace Grav\Plugin;
 
+use Composer\Autoload\ClassLoader;
 use Grav\Common\Grav;
 use Grav\Common\Plugin;
 use Grav\Common\Twig\Twig;
 use RocketTheme\Toolbox\Event\Event;
 use Swift_RfcComplianceException;
-use Grav\Plugin\Babel\Babel;
 use SQLite3;
+use Grav\Plugin\Babel\Babel;
+use Grav\Plugin\Babel\BabelSearch;
 use Grav\Common\Filesystem\Folder;
 use ReflectionProperty;
 use TeamTNT\TNTSearch\Exceptions\IndexNotFoundException;
 use Grav\Common\File\CompiledYamlFile;
 
-class BabelPlugin extends Plugin
+require __DIR__ . '/classes/Babel.php';
+require __DIR__ . '/classes/BabelSearch.php';
+require __DIR__ . '/classes/BabelResultObject.php';
+require __DIR__ . '/classes/BabelIndexer.php';
+
+
+class babelPlugin extends Plugin
 {
     /**
      * @var babel
@@ -22,29 +30,36 @@ class BabelPlugin extends Plugin
     protected $route = 'babel';
     protected $sqlite;
     protected $admin_route;
+
+    
+    /**
+     * [onPluginsInitialized:100000] Composer autoload.
+     *is
+     * @return ClassLoader
+     */
+    public function autoload(): ClassLoader
+    {
+        return require __DIR__ . '/vendor/autoload.php';
+        
+    }
     /**
      * @return array
+     *
+     * The getSubscribedEvents() gives the core a list of events
+     *     that the plugin wants to listen to. The key of each
+     *     array section is the event that the plugin listens to
+     *     and the value (in the form of an array) contains the
+     *     callable (or function) as well as the priority. The
+     *     higher the number the higher the priority.
      */
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             'onPluginsInitialized'      => [
                 ['autoload', 100000],
                 ['onPluginsInitialized', 0]
             ],
-            //'onFormProcessed' => ['onFormProcessed', 0],
-            //'onTwigTemplatePaths' => ['onTwigTemplatePaths', 0]
         ];
-    }
-
-    /**
-     * [onPluginsInitialized:100000] Composer autoload.
-     *is
-     * @return ClassLoader
-     */
-    public function autoload()
-    {
-        return require __DIR__ . '/vendor/autoload.php';
     }
     
     /**
@@ -60,7 +75,6 @@ class BabelPlugin extends Plugin
             $route = $this->config->get('plugins.admin.route');
             $base = '/' . trim($route, '/');
             $this->admin_route = $this->grav['base_url'] . $base;
-            
             
             $this->enable([
                 'onAdminTaskExecute' => ['onAdminTaskExecute', 0],                

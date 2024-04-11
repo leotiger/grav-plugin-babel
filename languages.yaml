@@ -23,7 +23,7 @@ en:
         RESET: Reset definitions
         MERGE: Merge
         EXPORT: Export
-        EXPORT_HINT: Use the export button to export and add the definitions for a given language and domain to the corresponding language pack of the domain. You can download exported language sets below. If you don't see your export package please reload the page.
+        EXPORT_HINT: "Please select a translation domain to process exports."
         DOMAIN_PACKAGE: Exported Language Pack
         HIDE_SYSTEM: Hide system
         HIDE_SYSTEM_HELP: Exclude GRAV System variables. You should not disable this option without a deep knowledge of the GRAV system internals and programming skills.

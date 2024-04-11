@@ -1,3 +1,11 @@
+# v1.1.6
+## 11-04-2024
+
+1. [](#improved)
+    * Export hint
+2. [](#bugfix)
+    * Fix composer.json
+
 # v1.1.5
 ## 11-04-2024
 

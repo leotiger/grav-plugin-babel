@@ -21,7 +21,7 @@ class BabelConnector extends \PDO
         return false;
     }
 
-    public function query($query)
+    public function runQuery($query)
     {
         $counter = 0;
         $results = [];

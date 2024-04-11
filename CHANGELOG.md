@@ -1,12 +1,18 @@
+# v1.1.5
+## 11-04-2024
+
+1. [](#bugfix)
+    * Make valid composer files available to allow for side by side execution with tntsearch plugin
+
 # v1.1.4
-## 12-04-2024
+## 11-04-2024
 
 1. [](#bugfix)
     * Create valid composer json file
     * Create valid and non-conflicting vendor/composer files
 
 # v1.1.3
-## 12-04-2024
+## 11-04-2024
 
 1. [](#bugfix)
     * Make compatible with PHP version 8+

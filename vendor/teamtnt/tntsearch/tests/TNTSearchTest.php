@@ -3,7 +3,7 @@
 use TeamTNT\TNTSearch\Exceptions\IndexNotFoundException;
 use TeamTNT\TNTSearch\TNTSearch;
 
-class TNTSearchTest extends PHPUnit_Framework_TestCase
+class TNTSearchTest extends PHPUnit\Framework\TestCase
 {
     protected $indexName = "testIndex";
 
@@ -13,7 +13,8 @@ class TNTSearchTest extends PHPUnit_Framework_TestCase
         'host'     => 'localhost',
         'username' => 'testUser',
         'password' => 'testPass',
-        'storage'  => __DIR__.'/_files/'
+        'storage'  => __DIR__.'/_files/',
+        'stemmer'  => \TeamTNT\TNTSearch\Stemmer\PorterStemmer::class
     ];
 
     public function testLoadConfig()
@@ -26,6 +27,7 @@ class TNTSearchTest extends PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('username', $tnt->config);
         $this->assertArrayHasKey('password', $tnt->config);
         $this->assertArrayHasKey('storage', $tnt->config);
+        $this->assertArrayHasKey('stemmer', $tnt->config);
     }
 
     public function testCreateIndex()
@@ -57,13 +59,13 @@ class TNTSearchTest extends PHPUnit_Framework_TestCase
         $this->assertEquals([3, 4, 1, 2], $res['ids']);
         $this->assertEquals(4, $res['hits']);
 
-        $res = $tnt->searchBoolean('juliet -well');
+        $res = $tnt->searchBoolean('juliet ~well');
         $this->assertEquals([5, 6, 7, 8, 10], $res['ids']);
 
-        $res = $tnt->searchBoolean('juliet -romeo');
+        $res = $tnt->searchBoolean('juliet ~romeo');
         $this->assertEquals([10], $res['ids']);
 
-        $res = $tnt->searchBoolean('hamlet -king');
+        $res = $tnt->searchBoolean('hamlet ~king');
         $this->assertEquals([2], $res['ids']);
 
         $res = $tnt->searchBoolean('hamlet superman');
@@ -75,10 +77,10 @@ class TNTSearchTest extends PHPUnit_Framework_TestCase
         $res = $tnt->searchBoolean('hamlet');
         $this->assertEquals([1, 2], $res['ids']);
 
-        $res = $tnt->searchBoolean('eldred -bar');
+        $res = $tnt->searchBoolean('eldred ~bar');
         $this->assertEquals([11], $res['ids']);
 
-        $res = $tnt->searchBoolean('Eldred -bar');
+        $res = $tnt->searchBoolean('Eldred ~bar');
         $this->assertEquals([11], $res['ids']);
     }
 
@@ -111,7 +113,7 @@ class TNTSearchTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(12, $tnt->totalDocumentsInCollection());
     }
 
-    public function testRemovePrimaryKeyFromIndex()
+    public function testPrimaryKeyIncludedInResult()
     {
         $tnt = new TNTSearch;
 
@@ -127,6 +129,14 @@ class TNTSearchTest extends PHPUnit_Framework_TestCase
         $res = $tnt->search(3);
         $this->assertEquals([3], $res['ids']);
 
+    }
+
+    public function testPrimaryKeyNotIncludedInResult()
+    {
+        $tnt = new TNTSearch;
+
+        $tnt->loadConfig($this->config);
+
         $indexer                = $tnt->createIndex($this->indexName);
         $indexer->disableOutput = true;
         $indexer->query('SELECT id, title, article FROM articles;');
@@ -135,7 +145,6 @@ class TNTSearchTest extends PHPUnit_Framework_TestCase
         $tnt->selectIndex($this->indexName);
         $res = $tnt->search(3);
         $this->assertEquals([], $res['ids']);
-
     }
 
     public function testIndexUpdate()
@@ -295,22 +304,45 @@ class TNTSearchTest extends PHPUnit_Framework_TestCase
         $this->assertContains(15, $res['ids']);
     }
 
-    /**
-     * @expectedException     TeamTNT\TNTSearch\Exceptions\IndexNotFoundException
-     * @expectedExceptionCode 1
-     */
     public function testIndexDoesNotExistException()
     {
+        $this->expectException(IndexNotFoundException::class);
+        $this->expectExceptionCode(1);
         $tnt = new TNTSearch;
         $tnt->loadConfig($this->config);
         $tnt->selectIndex('IndexThatDoesNotExist');
     }
 
-    public function tearDown()
+    public function testStemmerIsSetOnNewIndexesBasedOnConfig()
+    {
+        $config            = $this->config;
+        $config['stemmer'] = \TeamTNT\TNTSearch\Stemmer\GermanStemmer::class;
+
+        $tnt = new TNTSearch();
+        $tnt->loadConfig($config);
+        $tnt->createIndex($this->indexName);
+        $tnt->selectIndex($this->indexName);
+
+        $this->assertInstanceOf(\TeamTNT\TNTSearch\Stemmer\GermanStemmer::class, $tnt->getStemmer());
+    }
+
+    public function testDefaultStemmerIsSetOnNewIndexesIfNoneConfigured()
+    {
+        $config = $this->config;
+        unset($config['stemmer']);
+
+        $tnt = new TNTSearch();
+        $tnt->loadConfig($config);
+        $tnt->createIndex($this->indexName);
+        $tnt->selectIndex($this->indexName);
+
+        $this->assertInstanceOf(\TeamTNT\TNTSearch\Stemmer\NoStemmer::class, $tnt->getStemmer());
+    }
+
+    public function tearDown(): void
     {
         if (file_exists(__DIR__."/".$this->indexName)) {
             unlink(__DIR__."/".$this->indexName);
         }
-
     }
 }

@@ -4,11 +4,28 @@
 [![Build Status](https://img.shields.io/travis/teamtnt/tntsearch/master.svg?style=flat-square)](https://travis-ci.org/teamtnt/tntsearch)
 [![Slack Status](https://img.shields.io/badge/slack-chat-E01563.svg?style=flat-square)](https://tntsearch.slack.com)
 
+![TNTSearch](https://i.imgur.com/aYKsNYv.png)
+
 # TNTSearch
 
-A fully featured full text search engine written in PHP
+TNTSearch is a full-text search (FTS) engine written entirely in PHP. A simple configuration allows you to add an amazing search experience in just minutes. Features include:
 
-![TNTSearch Banner](https://cloud.githubusercontent.com/assets/824840/17067635/edf2ae50-504c-11e6-9c63-a73955f55c29.jpg)
+* Fuzzy search
+* Search as you type
+* Geo-search
+* Text classification
+* Stemming
+* Custom tokenizers
+* Bm25 ranking algorithm
+* Boolean search
+* Result highlighting
+* Dynamic index updates (no need to reindex each time)
+* Easily deployable via Packagist.org
+
+We also created some demo pages that show tolerant retrieval with n-grams in action.
+The package has a bunch of helper functions like Jaro-Winkler and Cosine similarity for distance calculations. It supports stemming for English, Croatian, Arabic, Italian, Russian, Portuguese and Ukrainian. If the built-in stemmers aren't enough, the engine lets you easily plugin any compatible snowball stemmer. Some forks of the package even support Chinese. And please contribute other languages!
+
+Unlike many other engines, the index can be easily updated without doing a reindex or using deltas. 
 
 **View** [online demo](http://tntsearch.tntstudio.us/) &nbsp;|&nbsp; **Follow us** on
 [Twitter](https://twitter.com/tntstudiohr),
@@ -17,25 +34,32 @@ or [Facebook](https://www.facebook.com/tntstudiohr) &nbsp;|&nbsp;
 
 <p align="center">
   <a href="https://m.do.co/c/ddfc227b7d18" target="_blank">
-    <img src="https://koistya.github.io/files/digital-ocean-393x64.png" width="196.5" height="32">
+    <img src="https://images.prismic.io/www-static/49aa0a09-06d2-4bba-ad20-4bcbe56ac507_logo.png?auto=compress,format" width="196.5" height="32">
   </a>
 </p>
 
 ---
 ## Demo
 
-To see TNTSearch in action take a look at [the demo page](http://tntsearch.tntstudio.us/)
+* [TV Shows Search](http://tntsearch.tntstudio.us/)
+* [PHPUnit Documentation Search](http://phpunit.tntstudio.us)
+* [City Search with n-grams](http://cities.tnt.studio/)
 
 ## Tutorials
 
-* [Solving the search problem with Laravel and TNTSearch](http://tnt.studio/blog/solving-the-search-problem-with-laravel-and-tntsearch)
-* [Searching for Bobby Fisher with Laravel 5](http://tnt.studio/blog/searching-for-bobby-fisher-with-laravel-5)
-* [Did you mean functionality with Laravel Scout](http://tnt.studio/blog/did-you-mean-functionality-with-laravel-scout)
+* [Solving the search problem with Laravel and TNTSearch](https://tnt.studio/solving-the-search-problem-with-laravel-and-tntsearch)
+* [Searching for Users with Laravel Scout and TNTSearch](https://tnt.studio/searching-for-users-with-laravel-scout-and-tntsearch)
 
-## Support us on Patreon
+## Premium products
 
-- [Nenad Ticaric](https://www.patreon.com/nticaric)
-- [Sasa Tokic](https://www.patreon.com/stokic)
+If you're using TNT Search and finding it useful, take a look at our premium analytics tool:
+
+
+[<img src="https://i.imgur.com/ujagviB.png" width="420px" />](https://analytics.tnt.studio)
+
+## Support us on Open Collective
+
+- [TNTSearch](https://opencollective.com/tntsearch)
 
 ## Installation
 
@@ -47,9 +71,9 @@ composer require teamtnt/tntsearch
 
 ## Requirements
 
-Before you proceed make sure your server meets the following requirements:
+Before you proceed, make sure your server meets the following requirements:
 
-* PHP >= 5.5
+* PHP >= 7.1
 * PDO PHP Extension
 * SQLite PHP Extension
 * mbstring PHP Extension
@@ -58,7 +82,7 @@ Before you proceed make sure your server meets the following requirements:
 
 ### Creating an index
 
-In order to be able to make full text search queries you have to create an index.
+In order to be able to make full text search queries, you have to create an index.
 
 Usage:
 ```php
@@ -72,7 +96,8 @@ $tnt->loadConfig([
     'database'  => 'dbname',
     'username'  => 'user',
     'password'  => 'pass',
-    'storage'   => '/var/www/tntsearch/examples/'
+    'storage'   => '/var/www/tntsearch/examples/',
+    'stemmer'   => \TeamTNT\TNTSearch\Stemmer\PorterStemmer::class//optional
 ]);
 
 $indexer = $tnt->createIndex('name.index');
@@ -96,7 +121,8 @@ $indexer->setPrimaryKey('article_id');
 
 ### Making the primary key searchable
 
-By default the primary key is not searchable, if you wanna make it searchable simply run:
+By default, the primary key isn't searchable. If you want to make it searchable, simply run:
+
 
 ```php
 $indexer->includePrimaryKey();
@@ -104,8 +130,7 @@ $indexer->includePrimaryKey();
 
 ### Searching
 
-Searching for a phrase or keyword is trivial
-
+Searching for a phrase or keyword is trivial:
 
 ```php
 use TeamTNT\TNTSearch\TNTSearch;
@@ -123,8 +148,8 @@ print_r($res); //returns an array of 12 document ids that best match your query
 // SELECT * FROM articles WHERE id IN $res ORDER BY FIELD(id, $res);
 ```
 
-The ORDER BY FIELD clause is important otherwise the database engine will not return
-the results in required order
+The ORDER BY FIELD clause is important, otherwise the database engine will not return
+the results in the required order.
 
 ### Boolean Search
 
@@ -154,7 +179,7 @@ The fuzziness can be tweaked by setting the following member variables:
 ```php
 public $fuzzy_prefix_length  = 2;
 public $fuzzy_max_expansions = 50;
-public $fuzzy_distance       = 2 //represents the levenshtein distance;
+public $fuzzy_distance       = 2; //represents the Levenshtein distance;
 ```
 
 ```php
@@ -166,14 +191,14 @@ $tnt->loadConfig($config);
 $tnt->selectIndex("name.index");
 $tnt->fuzziness = true;
 
-//when the fuzziness flag is set to true the keyword juleit will return
-//documents that match the word juliet, the default levenshtein distance is 2
+//when the fuzziness flag is set to true, the keyword juleit will return
+//documents that match the word juliet, the default Levenshtein distance is 2
 $res = $tnt->search("juleit");
 
 ```
 ## Updating the index
 
-Once you created an index you don't need to reindex it each time you make some changes 
+Once you created an index, you don't need to reindex it each time you make some changes 
 to your document collection. TNTSearch supports dynamic index updates.
 
 ```php
@@ -194,6 +219,60 @@ $index->update(11, ['id' => '11', 'title' => 'updated title', 'article' => 'upda
 
 //to delete the document from index
 $index->delete(12);
+```
+
+## Custom Tokenizer
+First, create your own Tokenizer class. It should extend AbstractTokenizer class, define 
+word split $pattern value and must implement TokenizerInterface:
+
+``` php
+
+use TeamTNT\TNTSearch\Support\AbstractTokenizer;
+use TeamTNT\TNTSearch\Support\TokenizerInterface;
+
+class SomeTokenizer extends AbstractTokenizer implements TokenizerInterface
+{
+    static protected $pattern = '/[\s,\.]+/';
+
+    public function tokenize($text) {
+        return preg_split($this->getPattern(), strtolower($text), -1, PREG_SPLIT_NO_EMPTY);
+    }
+}
+```
+
+This tokenizer will split words using spaces, commas and periods.
+
+After you have the tokenizer ready, you should pass it to `TNTIndexer` via `setTokenizer` method.
+
+``` php
+$someTokenizer = new SomeTokenizer;
+
+$indexer = new TNTIndexer;
+$indexer->setTokenizer($someTokenizer);
+```
+
+Another way would be to pass the tokenizer via config:
+
+```php
+use TeamTNT\TNTSearch\TNTSearch;
+
+$tnt = new TNTSearch;
+
+$tnt->loadConfig([
+    'driver'    => 'mysql',
+    'host'      => 'localhost',
+    'database'  => 'dbname',
+    'username'  => 'user',
+    'password'  => 'pass',
+    'storage'   => '/var/www/tntsearch/examples/',
+    'stemmer'   => \TeamTNT\TNTSearch\Stemmer\PorterStemmer::class//optional,
+    'tokenizer' => \TeamTNT\TNTSearch\Support\SomeTokenizer::class
+]);
+
+$indexer = $tnt->createIndex('name.index');
+$indexer->query('SELECT id, article FROM articles;');
+$indexer->run();
+
 ```
 
 ## Geo Search
@@ -257,7 +336,19 @@ $classifier->load('sports.cls');
 
 * [TNTSearch Driver for Laravel Scout](https://github.com/teamtnt/laravel-scout-tntsearch-driver)
 
+## PS4Ware
+
+You're free to use this package, but if it makes it to your production environment, we would highly appreciate you sending us a PS4 game of your choice. This way you support us to further develop and add new features.
+
+Our address is: TNT Studio, Sv. Mateja 19, 10010 Zagreb, Croatia.
+
+We'll publish all received games [here][link-ps4ware]
+
+[link-ps4ware]: https://github.com/teamtnt/tntsearch/blob/master/PS4Ware.md
+
 ## Support [![OpenCollective](https://opencollective.com/tntsearch/backers/badge.svg)](#backers) [![OpenCollective](https://opencollective.com/tntsearch/sponsors/badge.svg)](#sponsors)
+
+<a href='https://ko-fi.com/O4O3K2R9' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://az743702.vo.msecnd.net/cdn/kofi4.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 ### Backers
 

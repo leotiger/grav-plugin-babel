@@ -5,7 +5,7 @@ namespace TeamTNT\TNTSearch;
 use PDO;
 use TeamTNT\TNTSearch\Exceptions\IndexNotFoundException;
 use TeamTNT\TNTSearch\Indexer\TNTIndexer;
-use TeamTNT\TNTSearch\Stemmer\PorterStemmer;
+use TeamTNT\TNTSearch\Stemmer\NoStemmer;
 use TeamTNT\TNTSearch\Support\Collection;
 use TeamTNT\TNTSearch\Support\Expression;
 use TeamTNT\TNTSearch\Support\Highlighter;
@@ -51,14 +51,6 @@ class TNTSearch
     }
 
     /**
-     * @param TokenizerInterface $tokenizer
-     */
-    public function setTokenizer(TokenizerInterface $tokenizer)
-    {
-        $this->tokenizer = $tokenizer;
-    }
-
-    /**
      * @param string $indexName
      * @param boolean $disableOutput
      *
@@ -90,6 +82,7 @@ class TNTSearch
         $this->index = new PDO('sqlite:'.$pathToIndex);
         $this->index->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->setStemmer();
+        $this->setTokenizer();
     }
 
     /**
@@ -116,10 +109,10 @@ class TNTSearch
         foreach ($keywords as $index => $term) {
             $isLastKeyword = ($keywords->count() - 1) == $index;
             $df            = $this->totalMatchingDocuments($term, $isLastKeyword);
+            $idf           = log($count / max(1, $df));
             foreach ($this->getAllDocumentsForKeyword($term, false, $isLastKeyword) as $document) {
                 $docID = $document['doc_id'];
                 $tf    = $document['hit_count'];
-                $idf   = log($count / $df);
                 $num   = ($tfWeight + 1) * $tf;
                 $denom = $tfWeight
                      * ((1 - $dlWeight) + $dlWeight)
@@ -134,17 +127,10 @@ class TNTSearch
 
         $docs = new Collection($docScores);
 
-        $counter   = 0;
         $totalHits = $docs->count();
         $docs      = $docs->map(function ($doc, $key) {
             return $key;
-        })->filter(function ($item) use (&$counter, $numOfResults) {
-            $counter++;
-            if ($counter <= $numOfResults) {
-                return true;
-            }
-            return false; // ?
-        });
+        })->take($numOfResults);
         $stopTimer = microtime(true);
 
         if ($this->isFileSystemIndex()) {
@@ -233,14 +219,7 @@ class TNTSearch
             $docs = new Collection;
         }
 
-        $counter = 0;
-        $docs    = $docs->filter(function ($item) use (&$counter, $numOfResults) {
-            $counter++;
-            if ($counter <= $numOfResults) {
-                return $item;
-            }
-            return false; // ?
-        });
+        $docs = $docs->take($numOfResults);
 
         $stopTimer = microtime(true);
 
@@ -322,10 +301,6 @@ class TNTSearch
      */
     public function getWordlistByKeyword($keyword, $isLastWord = false)
     {
-        if ($this->fuzziness) {
-            return $this->fuzzySearch($keyword);
-        }
-
         $searchWordlist = "SELECT * FROM wordlist WHERE term like :keyword LIMIT 1";
         $stmtWord       = $this->index->prepare($searchWordlist);
 
@@ -339,6 +314,9 @@ class TNTSearch
         $stmtWord->execute();
         $res = $stmtWord->fetchAll(PDO::FETCH_ASSOC);
 
+        if ($this->fuzziness && !isset($res[0])) {
+            return $this->fuzzySearch($keyword);
+        }
         return $res;
     }
 
@@ -349,7 +327,7 @@ class TNTSearch
      */
     public function fuzzySearch($keyword)
     {
-        $prefix         = substr($keyword, 0, $this->fuzzy_prefix_length);
+        $prefix         = mb_substr($keyword, 0, $this->fuzzy_prefix_length);
         $searchWordlist = "SELECT * FROM wordlist WHERE term like :keyword ORDER BY num_hits DESC LIMIT {$this->fuzzy_max_expansions}";
         $stmtWord       = $this->index->prepare($searchWordlist);
         $stmtWord->bindValue(':keyword', mb_strtolower($prefix)."%");
@@ -393,7 +371,17 @@ class TNTSearch
         if ($stemmer) {
             $this->stemmer = new $stemmer;
         } else {
-            $this->stemmer = new PorterStemmer;
+            $this->stemmer = isset($this->config['stemmer']) ? new $this->config['stemmer'] : new NoStemmer;
+        }
+    }
+
+    public function setTokenizer()
+    {
+        $tokenizer = $this->getValueFromInfoTable('tokenizer');
+        if ($tokenizer) {
+            $this->tokenizer = new $tokenizer;
+        } else {
+            $this->tokenizer = isset($this->config['tokenizer']) ? new $this->config['tokenizer'] : new Tokenizer;
         }
     }
 
@@ -410,7 +398,11 @@ class TNTSearch
         $query = "SELECT * FROM info WHERE key = '$value'";
         $docs  = $this->index->query($query);
 
-        return $docs->fetch(PDO::FETCH_ASSOC)['value'];
+        if ($ret = $docs->fetch(PDO::FETCH_ASSOC)) {
+            return $ret['value'];
+        }
+
+        return null;
     }
 
     public function filesystemMapIdsToPaths($docs)
@@ -444,13 +436,13 @@ class TNTSearch
      */
     public function highlight($text, $needle, $tag = 'em', $options = [])
     {
-        $hl = new Highlighter;
+        $hl = new Highlighter($this->tokenizer);
         return $hl->highlight($text, $needle, $tag, $options);
     }
 
     public function snippet($words, $fulltext, $rellength = 300, $prevcount = 50, $indicator = '...')
     {
-        $hl = new Highlighter;
+        $hl = new Highlighter($this->tokenizer);
         return $hl->extractRelevant($words, $fulltext, $rellength, $prevcount, $indicator);
     }
 
@@ -463,6 +455,7 @@ class TNTSearch
         $indexer->inMemory = false;
         $indexer->setIndex($this->index);
         $indexer->setStemmer($this->stemmer);
+        $indexer->setTokenizer($this->tokenizer);
         return $indexer;
     }
 
@@ -475,16 +468,26 @@ class TNTSearch
     private function getAllDocumentsForFuzzyKeyword($words, $noLimit)
     {
         $binding_params = implode(',', array_fill(0, count($words), '?'));
-        $query          = "SELECT * FROM doclist WHERE term_id in ($binding_params) ORDER BY hit_count DESC LIMIT {$this->maxDocs}";
-        if ($noLimit) {
-            $query = "SELECT * FROM doclist WHERE term_id in ($binding_params) ORDER BY hit_count DESC";
+        $query          = "SELECT * FROM doclist WHERE term_id in ($binding_params) ORDER BY CASE term_id";
+        $order_counter  = 1;
+
+        foreach ($words as $word) {
+            $query .= " WHEN ".$word['id']." THEN ".$order_counter++;
         }
+
+        $query .= " END";
+
+        if (!$noLimit) {
+            $query .= " LIMIT {$this->maxDocs}";
+        }
+
         $stmtDoc = $this->index->prepare($query);
 
         $ids = null;
         foreach ($words as $word) {
             $ids[] = $word['id'];
         }
+
         $stmtDoc->execute($ids);
         return new Collection($stmtDoc->fetchAll(PDO::FETCH_ASSOC));
     }

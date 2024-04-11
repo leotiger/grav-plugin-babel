@@ -2,7 +2,7 @@
 
 use TeamTNT\TNTSearch\Support\Tokenizer;
 
-class TokenizerTest extends PHPUnit_Framework_TestCase
+class TokenizerTest extends PHPUnit\Framework\TestCase
 {
     public function testTokenize()
     {
@@ -22,6 +22,7 @@ class TokenizerTest extends PHPUnit_Framework_TestCase
         $res  = $tokenizer->tokenize($text);
         $this->assertContains("test", $res);
         $this->assertContains("email", $res);
+        $this->assertContains("test@email", $res);
         $this->assertContains("contains", $res);
         $this->assertContains("123", $res);
 

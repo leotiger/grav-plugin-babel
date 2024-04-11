@@ -18,7 +18,7 @@ class Expression
                 $postfix[] = $token;
             } else {
                 if ($token == ")") {
-                    while (($top = array_pop($stack)) != "(") {
+                    while (($top = array_pop($stack)) != "(" && !empty($top)) {
                         $postfix[] = $top;
                     }
 
@@ -86,8 +86,8 @@ class Expression
 
     public function lex($string)
     {
-        $bad  = [' or ', '-', ' ', '@', '.'];
-        $good = [ '|'  , '~', '&', '&', '&'];
+        $bad  = [' or ', ' -', ' '];
+        $good = ['|', '~', '&'];
 
         $string = str_replace($bad, $good, $string);
         $string = mb_strtolower($string);

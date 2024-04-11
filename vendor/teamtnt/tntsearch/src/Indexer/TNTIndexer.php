@@ -13,7 +13,7 @@ use TeamTNT\TNTSearch\Connectors\SQLiteConnector;
 use TeamTNT\TNTSearch\Connectors\SqlServerConnector;
 use TeamTNT\TNTSearch\FileReaders\TextFileReader;
 use TeamTNT\TNTSearch\Stemmer\CroatianStemmer;
-use TeamTNT\TNTSearch\Stemmer\PorterStemmer;
+use TeamTNT\TNTSearch\Stemmer\NoStemmer;
 use TeamTNT\TNTSearch\Support\Collection;
 use TeamTNT\TNTSearch\Support\Tokenizer;
 use TeamTNT\TNTSearch\Support\TokenizerInterface;
@@ -41,7 +41,7 @@ class TNTIndexer
 
     public function __construct()
     {
-        $this->stemmer    = new PorterStemmer;
+        $this->stemmer    = new NoStemmer;
         $this->tokenizer  = new Tokenizer;
         $this->filereader = new TextFileReader;
     }
@@ -52,6 +52,7 @@ class TNTIndexer
     public function setTokenizer(TokenizerInterface $tokenizer)
     {
         $this->tokenizer = $tokenizer;
+        $this->updateInfoTable('tokenizer', get_class($tokenizer));
     }
 
     public function setStopWords(array $stopWords)
@@ -66,10 +67,14 @@ class TNTIndexer
     {
         $this->config            = $config;
         $this->config['storage'] = rtrim($this->config['storage'], '/').'/';
+
         if (!isset($this->config['driver'])) {
             $this->config['driver'] = "";
         }
 
+        if (!isset($this->config['wal'])) {
+            $this->config['wal'] = true;
+        }
     }
 
     /**
@@ -117,8 +122,7 @@ class TNTIndexer
     public function setStemmer($stemmer)
     {
         $this->stemmer = $stemmer;
-        $class         = get_class($stemmer);
-        $this->index->exec("INSERT INTO info ( 'key', 'value') values ( 'stemmer', '$class')");
+        $this->updateInfoTable('stemmer', get_class($stemmer));
     }
 
     public function setCroatianStemmer()
@@ -127,9 +131,9 @@ class TNTIndexer
     }
 
     /**
-     * @param string $language  - one of: arabic, croatian, german, italian, porter, russian, ukrainian
+     * @param string $language  - one of: no, arabic, croatian, german, italian, porter, portuguese, russian, ukrainian
      */
-    public function setLanguage($language = 'porter')
+    public function setLanguage($language = 'no')
     {
         $class = 'TeamTNT\\TNTSearch\\Stemmer\\'.ucfirst(strtolower($language)).'Stemmer';
         $this->setStemmer(new $class);
@@ -174,6 +178,10 @@ class TNTIndexer
         $this->index = new PDO('sqlite:'.$this->config['storage'].$indexName);
         $this->index->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+        if ($this->config['wal']) {
+            $this->index->exec("PRAGMA journal_mode=wal;");
+        }
+
         $this->index->exec("CREATE TABLE IF NOT EXISTS wordlist (
                     id INTEGER PRIMARY KEY,
                     term TEXT UNIQUE COLLATE nocase,
@@ -203,8 +211,19 @@ class TNTIndexer
                     value INTEGER)");
 
         $this->index->exec("INSERT INTO info ( 'key', 'value') values ( 'total_documents', 0)");
+        $this->index->exec("INSERT INTO info ( 'key', 'value') values ( 'stemmer', 'TeamTNT\TNTSearch\Stemmer\NoStemmer')");
+        $this->index->exec("INSERT INTO info ( 'key', 'value') values ( 'tokenizer', 'TeamTNT\TNTSearch\Support\Tokenizer')");
 
         $this->index->exec("CREATE INDEX IF NOT EXISTS 'main'.'term_id_index' ON doclist ('term_id' COLLATE BINARY);");
+        $this->index->exec("CREATE INDEX IF NOT EXISTS 'main'.'doc_id_index' ON doclist ('doc_id');");
+
+        if (isset($this->config['stemmer'])) {
+            $this->setStemmer(new $this->config['stemmer']);
+        }
+
+        if (isset($this->config['tokenizer'])) {
+            $this->setTokenizer(new $this->config['tokenizer']);
+        }
 
         if (!$this->dbh) {
             $connector = $this->createConnector($this->config);
@@ -272,9 +291,8 @@ class TNTIndexer
             return $this->readDocumentsFromFileSystem();
         }
 
-        
         $result = $this->dbh->query($this->query);
-        //dump($result);
+
         $counter = 0;
         $this->index->beginTransaction();
         while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
@@ -288,7 +306,7 @@ class TNTIndexer
             if ($counter % 10000 == 0) {
                 $this->index->commit();
                 $this->index->beginTransaction();
-                $this->info("Commited");
+                $this->info("Committed");
             }
         }
         $this->index->commit();
@@ -334,10 +352,12 @@ class TNTIndexer
                 ];
                 $fileCollection = new Collection($file);
 
-                if (is_callable($this->filereader->fileFilterCallback)) {
+                if (property_exists($this->filereader, 'fileFilterCallback')
+                    && is_callable($this->filereader->fileFilterCallback)) {
                     $fileCollection = $fileCollection->filter($this->filereader->fileFilterCallback);
                 }
-                if (is_callable($this->filereader->fileMapCallback)) {
+                if (property_exists($this->filereader, 'fileMapCallback')
+                    && is_callable($this->filereader->fileMapCallback)) {
                     $fileCollection = $fileCollection->map($this->filereader->fileMapCallback);
                 }
 
@@ -416,7 +436,10 @@ class TNTIndexer
 
     public function updateInfoTable($key, $value)
     {
-        $this->index->exec("UPDATE info SET value = $value WHERE key = '$key'");
+        $this->updateInfoTableStmt = $this->index->prepare("UPDATE info SET value = :value WHERE key = :key");
+        $this->updateInfoTableStmt->bindValue(':key', $key);
+        $this->updateInfoTableStmt->bindValue(':value', $value);
+        $this->updateInfoTableStmt->execute();
     }
 
     public function stemText($text)

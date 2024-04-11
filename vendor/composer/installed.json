@@ -1,60 +1,87 @@
-[
-    {
-        "name": "teamtnt/tntsearch",
-        "version": "v1.3.4",
-        "version_normalized": "1.3.4.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/teamtnt/tntsearch.git",
-            "reference": "40c4395cf04e089b6f2fd4dd98d4b1d09de1ce6b"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/teamtnt/tntsearch/zipball/40c4395cf04e089b6f2fd4dd98d4b1d09de1ce6b",
-            "reference": "40c4395cf04e089b6f2fd4dd98d4b1d09de1ce6b",
-            "shasum": ""
-        },
-        "require": {
-            "ext-mbstring": "*",
-            "ext-pdo_sqlite": "*",
-            "ext-sqlite3": "*",
-            "php": "~5.5|~7.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "5.*"
-        },
-        "time": "2018-07-18T16:57:14+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "TeamTNT\\TNTSearch\\": "src"
+{
+    "packages": [
+        {
+            "name": "teamtnt/tntsearch",
+            "version": "v2.9.0",
+            "version_normalized": "2.9.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/teamtnt/tntsearch.git",
+                "reference": "ccedae0cfe21f7831f2dd1f973cf8904dad42d8d"
             },
-            "files": [
-                "helper/helpers.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Nenad Tičarić",
-                "email": "nticaric@gmail.com",
-                "homepage": "http://www.tntstudio.us",
-                "role": "Developer"
-            }
-        ],
-        "description": "A fully featured full text search engine written in PHP",
-        "homepage": "https://github.com/teamtnt/tntsearch",
-        "keywords": [
-            "Fuzzy search",
-            "fulltext",
-            "geosearch",
-            "search",
-            "teamtnt",
-            "tntsearch"
-        ]
-    }
-]
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/teamtnt/tntsearch/zipball/ccedae0cfe21f7831f2dd1f973cf8904dad42d8d",
+                "reference": "ccedae0cfe21f7831f2dd1f973cf8904dad42d8d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "ext-pdo_sqlite": "*",
+                "ext-sqlite3": "*",
+                "php": "~7.1|^8"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "7.*|8.*|9.*",
+                "symfony/var-dumper": "^4|^5.2"
+            },
+            "time": "2022-02-22T10:35:34+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "files": [
+                    "helper/helpers.php"
+                ],
+                "psr-4": {
+                    "TeamTNT\\TNTSearch\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nenad Tičarić",
+                    "email": "nticaric@gmail.com",
+                    "homepage": "http://www.tntstudio.us",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A fully featured full text search engine written in PHP",
+            "homepage": "https://github.com/teamtnt/tntsearch",
+            "keywords": [
+                "Fuzzy search",
+                "bm25",
+                "fulltext",
+                "geosearch",
+                "search",
+                "stemming",
+                "teamtnt",
+                "text classification",
+                "tntsearch"
+            ],
+            "support": {
+                "issues": "https://github.com/teamtnt/tntsearch/issues",
+                "source": "https://github.com/teamtnt/tntsearch/tree/v2.9.0"
+            },
+            "funding": [
+                {
+                    "url": "https://ko-fi.com/nticaric",
+                    "type": "ko_fi"
+                },
+                {
+                    "url": "https://opencollective.com/tntsearch",
+                    "type": "open_collective"
+                },
+                {
+                    "url": "https://www.patreon.com/nticaric",
+                    "type": "patreon"
+                }
+            ],
+            "install-path": "../teamtnt/tntsearch"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}

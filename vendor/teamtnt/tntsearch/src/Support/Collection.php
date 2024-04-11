@@ -5,10 +5,10 @@ namespace TeamTNT\TNTSearch\Support;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
+use Traversable;
 
 class Collection implements Countable, IteratorAggregate
 {
-
     protected $items = [];
 
     public function __construct($items = [])
@@ -121,15 +121,35 @@ class Collection implements Countable, IteratorAggregate
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->items);
     }
 
     /**
+     * @param int $offset
+     * @param int $length
+     *
+     * @return static
+     */
+    public function slice($offset, $length = null)
+    {
+        return new static(array_slice($this->items, $offset, $length, true));
+    }
+
+    /**
+     * @param int $limit
+     * @return static
+     */
+    public function take($limit)
+    {
+        return $this->slice(0, abs($limit));
+    }
+
+    /**
      * @return ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->items);
     }

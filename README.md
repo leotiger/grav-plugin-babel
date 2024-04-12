@@ -20,7 +20,7 @@ With the advent of the Babel plugin this changes a bit.
 
 ## Usage
 
-To use the plugin you have to enable language support for you GRAV instance and you have to configure as well the languages you want to
+To use the plugin you have to enable language support in your GRAV instance and you have to configure as well the languages you want to
 handle with Babel in the configuration of the Babel plugin. The languages handled by Babel do not have to be identical with the languages enabled for your
 instance. This allows you to prepare additional languages before activating new ones for your site.
 

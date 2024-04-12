@@ -4,7 +4,7 @@ description: Translation services for GRAV
 icon: language
 author:
   name: Uli Hake
-  email: uli.hake@gmaill.com
+  email: uli.hake@gmail.com
   url: http://www.saveva.com
 keywords: plugin, i18n, translation, develop, language administration, language synchronization
 homepage: https://github.com/leotiger/grav-plugin-babel
@@ -13,8 +13,8 @@ docs: https://github.com/leotiger/grav-plugin-babel/blob/master/README.md
 license: MIT
 
 dependencies:
-    - { name: grav, version: '>=1.4.0' }
-    - { name: admin, version: '>=1.8.0' }
+    - { name: grav, version: '>=1.7.0' }
+    - { name: admin, version: '>=1.10.0' }
 
 form:
   validation: loose

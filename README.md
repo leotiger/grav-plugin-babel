@@ -81,6 +81,10 @@ This will install the Babel plugin into your `/user/plugins` directory within Gr
 
 Help can be obtained via the [issue section](https://github.com/leotiger/grav-plugin-babel/issues) but we cannot guarantee to answer in a timely or exhaustive fashion.
 
+### Collaborators
+
+If you feel that this plugin is needed, don't hesitate: you're invited to collaborate. And why not, you can take over this plugin as an owner. If you're intrigued, feel free to contact.
+
 ## Credits
 
 Thanks Trilby Media for [TNTSearch](https://github.com/trilbymedia/grav-plugin-tntsearch). This plugin uses modified code portions.
